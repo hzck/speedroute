@@ -1,0 +1,46 @@
+{
+  "rewards": [
+    {
+      "id": "A"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "START"
+    },
+    {
+      "id": "END"
+    },
+    {
+      "id": "1",
+      "rewards": [
+        {
+          "rewardId": "A",
+          "quantity": 2
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "1"
+    },
+    {
+      "from": "1",
+      "to": "END",
+      "weights": [
+        {
+          "requirements": [
+            {
+              "rewardId": "A",
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

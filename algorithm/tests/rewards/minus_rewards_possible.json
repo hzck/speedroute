@@ -1,0 +1,52 @@
+{
+  "rewards": [
+    {
+      "id": "A"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "START"
+    },
+    {
+      "id": "END"
+    },
+    {
+      "id": "1",
+      "rewards": [
+        {
+          "rewardId": "A"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "rewards": [
+        {
+          "rewardId": "A",
+          "quantity": -1
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "1"
+    },
+    {
+      "from": "START",
+      "to": "2"
+    },
+    {
+      "from": "1",
+      "to": "2"
+    },
+    {
+      "from": "2",
+      "to": "END"
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

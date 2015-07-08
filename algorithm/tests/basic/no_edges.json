@@ -1,0 +1,12 @@
+{
+  "nodes": [
+    {
+      "id": "START"
+    },
+    {
+      "id": "END"
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

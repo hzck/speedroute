@@ -1,0 +1,56 @@
+{
+  "nodes": [
+    {
+      "id": "START"
+    },
+    {
+      "id": "END"
+    },
+    {
+      "id": "1"
+    },
+    {
+      "id": "2"
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "1",
+      "weights": [
+        {
+          "time": 1
+        }
+      ]
+    },
+    {
+      "from": "START",
+      "to": "2",
+      "weights": [
+        {
+          "time": 2
+        }
+      ]
+    },
+    {
+      "from": "1",
+      "to": "END",
+      "weights": [
+        {
+          "time": 7
+        }
+      ]
+    },
+    {
+      "from": "2",
+      "to": "END",
+      "weights": [
+        {
+          "time": 2
+        }
+      ]
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

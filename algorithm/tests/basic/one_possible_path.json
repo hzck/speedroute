@@ -1,0 +1,32 @@
+{
+  "nodes": [
+    {
+      "id": "START"
+    },
+    {
+      "id": "END"
+    },
+    {
+      "id": "1"
+    },
+    {
+      "id": "2"
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "1"
+    },
+    {
+      "from": "1",
+      "to": "2"
+    },
+    {
+      "from": "2",
+      "to": "END"
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

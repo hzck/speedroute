@@ -1,0 +1,50 @@
+{
+  "rewards": [
+    {
+      "id": "A",
+      "unique": true
+    }
+  ],
+  "nodes": [
+    {
+      "id": "START",
+      "rewards": [
+        {
+          "rewardId": "A"
+        }
+      ]
+    },
+    {
+      "id": "END"
+    },
+    {
+      "id": "1",
+      "rewards": [
+        {
+          "rewardId": "A"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "1"
+    },
+    {
+      "from": "1",
+      "to": "END"
+    },
+    {
+      "from": "START",
+      "to": "END",
+      "weights": [
+        {
+          "time": 10
+        }
+      ]
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

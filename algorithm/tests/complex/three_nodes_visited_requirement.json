@@ -1,0 +1,418 @@
+{
+  "rewards": [
+    {
+      "id": "REQUIRED_NODE"
+    },
+    {
+      "id": "NODES_VISITED_COUNT"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "START"
+    },
+    {
+      "id": "END"
+    },
+    {
+      "id": "1",
+      "rewards": [
+        {
+          "rewardId": "NODES_VISITED_COUNT"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "rewards": [
+        {
+          "rewardId": "NODES_VISITED_COUNT"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "rewards": [
+        {
+          "rewardId": "NODES_VISITED_COUNT"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "rewards": [
+        {
+          "rewardId": "NODES_VISITED_COUNT"
+        },
+        {
+          "rewardId": "REQUIRED_NODE"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "rewards": [
+        {
+          "rewardId": "NODES_VISITED_COUNT"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "rewards": [
+        {
+          "rewardId": "NODES_VISITED_COUNT"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "1",
+      "weights": [
+        {
+          "time": 1
+        }
+      ]
+    },
+    {
+      "from": "1",
+      "to": "START",
+      "weights": [
+        {
+          "time": 1
+        }
+      ]
+    },
+    {
+      "from": "START",
+      "to": "2",
+      "weights": [
+        {
+          "time": 2
+        }
+      ]
+    },
+    {
+      "from": "2",
+      "to": "START",
+      "weights": [
+        {
+          "time": 2
+        }
+      ]
+    },
+    {
+      "from": "START",
+      "to": "3",
+      "weights": [
+        {
+          "time": 3
+        }
+      ]
+    },
+    {
+      "from": "3",
+      "to": "START",
+      "weights": [
+        {
+          "time": 3
+        }
+      ]
+    },
+    {
+      "from": "2",
+      "to": "3",
+      "weights": [
+        {
+          "time": 4
+        }
+      ]
+    },
+    {
+      "from": "3",
+      "to": "2",
+      "weights": [
+        {
+          "time": 4
+        }
+      ]
+    },
+    {
+      "from": "2",
+      "to": "1",
+      "weights": [
+        {
+          "time": 5
+        }
+      ]
+    },
+    {
+      "from": "1",
+      "to": "2",
+      "weights": [
+        {
+          "time": 5
+        }
+      ]
+    },
+    {
+      "from": "4",
+      "to": "1",
+      "weights": [
+        {
+          "time": 6
+        }
+      ]
+    },
+    {
+      "from": "1",
+      "to": "4",
+      "weights": [
+        {
+          "time": 6,
+          "requirements": [
+            {
+              "rewardId": "NODES_VISITED_COUNT",
+              "quantity": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "5",
+      "to": "1",
+      "weights": [
+        {
+          "time": 7
+        }
+      ]
+    },
+    {
+      "from": "1",
+      "to": "5",
+      "weights": [
+        {
+          "time": 7
+        }
+      ]
+    },
+    {
+      "from": "4",
+      "to": "2",
+      "weights": [
+        {
+          "time": 8
+        }
+      ]
+    },
+    {
+      "from": "2",
+      "to": "4",
+      "weights": [
+        {
+          "time": 8,
+          "requirements": [
+            {
+              "rewardId": "NODES_VISITED_COUNT",
+              "quantity": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "5",
+      "to": "2",
+      "weights": [
+        {
+          "time": 9
+        }
+      ]
+    },
+    {
+      "from": "2",
+      "to": "5",
+      "weights": [
+        {
+          "time": 9
+        }
+      ]
+    },
+    {
+      "from": "6",
+      "to": "2",
+      "weights": [
+        {
+          "time": 10
+        }
+      ]
+    },
+    {
+      "from": "2",
+      "to": "6",
+      "weights": [
+        {
+          "time": 10
+        }
+      ]
+    },
+    {
+      "from": "5",
+      "to": "3",
+      "weights": [
+        {
+          "time": 11
+        }
+      ]
+    },
+    {
+      "from": "3",
+      "to": "5",
+      "weights": [
+        {
+          "time": 11
+        }
+      ]
+    },
+    {
+      "from": "6",
+      "to": "3",
+      "weights": [
+        {
+          "time": 12
+        }
+      ]
+    },
+    {
+      "from": "3",
+      "to": "6",
+      "weights": [
+        {
+          "time": 12
+        }
+      ]
+    },
+    {
+      "from": "6",
+      "to": "5",
+      "weights": [
+        {
+          "time": 13
+        }
+      ]
+    },
+    {
+      "from": "5",
+      "to": "6",
+      "weights": [
+        {
+          "time": 13
+        }
+      ]
+    },
+    {
+      "from": "4",
+      "to": "5",
+      "weights": [
+        {
+          "time": 14
+        }
+      ]
+    },
+    {
+      "from": "5",
+      "to": "4",
+      "weights": [
+        {
+          "time": 14,
+          "requirements": [
+            {
+              "rewardId": "NODES_VISITED_COUNT",
+              "quantity": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "END",
+      "to": "6",
+      "weights": [
+        {
+          "time": 15
+        }
+      ]
+    },
+    {
+      "from": "6",
+      "to": "END",
+      "weights": [
+        {
+          "time": 15,
+          "requirements": [
+            {
+              "rewardId": "REQUIRED_NODE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "END",
+      "to": "5",
+      "weights": [
+        {
+          "time": 16
+        }
+      ]
+    },
+    {
+      "from": "5",
+      "to": "END",
+      "weights": [
+        {
+          "time": 16,
+          "requirements": [
+            {
+              "rewardId": "REQUIRED_NODE"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "END",
+      "to": "4",
+      "weights": [
+        {
+          "time": 17,
+          "requirements": [
+            {
+              "rewardId": "NODES_VISITED_COUNT",
+              "quantity": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "4",
+      "to": "END",
+      "weights": [
+        {
+          "time": 17,
+          "requirements": [
+            {
+              "rewardId": "REQUIRED_NODE"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

@@ -1,0 +1,82 @@
+{
+  "rewards": [
+    {
+      "id": "A"
+    },
+    {
+      "id": "B"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "START"
+    },
+    {
+      "id": "END"
+    },
+    {
+      "id": "1",
+      "rewards": [
+        {
+          "rewardId": "A"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "rewards": [
+        {
+          "rewardId": "B"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "1"
+    },
+    {
+      "from": "START",
+      "to": "2"
+    },
+    {
+      "from": "2",
+      "to": "1"
+    },
+    {
+      "from": "1",
+      "to": "END",
+      "weights": [
+        {
+          "requirements": [
+            {
+              "rewardId": "A"
+            },
+            {
+              "rewardId": "B"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "2",
+      "to": "END",
+      "weights": [
+        {
+          "requirements": [
+            {
+              "rewardId": "A"
+            },
+            {
+              "rewardId": "B"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}
