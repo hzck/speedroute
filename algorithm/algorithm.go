@@ -6,7 +6,7 @@ import (
 )
 
 func Route(graph *m.Graph) []*m.Edge {
-	if graph.StartNode() == nil || graph.EndNode() == nil || len(graph.Edges()) == 0 {
+	if graph.StartNode() == nil || graph.EndNode() == nil {
 		return nil
 	}
 	addMinPathLeft(graph)

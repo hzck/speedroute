@@ -5,7 +5,6 @@ import "container/heap"
 type Graph struct {
 	startNode *Node
 	endNode   *Node
-	edges     []*Edge
 	prioQueue *PrioQueue
 }
 
@@ -23,16 +22,6 @@ func (graph *Graph) EndNode() *Node {
 
 func (graph *Graph) AddEndNode(node *Node) {
 	graph.endNode = node
-}
-
-func (graph *Graph) Edges() []*Edge {
-	return graph.edges
-}
-
-func (graph *Graph) AddEdge(edge *Edge) {
-	graph.edges = append(graph.edges, edge)
-	edge.From().AddFromEdge(edge)
-	edge.To().AddToEdge(edge)
 }
 
 func (graph *Graph) PrioPath() *Path {

@@ -31,7 +31,9 @@ func (edge *Edge) AddWeight(weight *Weight) {
 func CreateEdge(from, to *Node) *Edge {
 	edge := new(Edge)
 	edge.from = from
+	from.AddFromEdge(edge)
 	edge.to = to
+	to.AddToEdge(edge)
 	return edge
 }
 

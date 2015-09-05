@@ -13,13 +13,9 @@ func (r *Reward) Unique() bool {
 	return r.unique
 }
 
-func (reward *Reward) SetUnique(unique bool) {
-	reward.unique = unique
-}
-
-func CreateReward(id string) *Reward {
+func CreateReward(id string, unique bool) *Reward {
 	r := new(Reward)
 	r.id = id
-	r.unique = false
+	r.unique = unique
 	return r
 }

@@ -14,7 +14,7 @@ func TestAllFiles(t *testing.T) {
 	for _, testPath := range getDirFileNames("tests/") {
 		graph := json.CreateGraphFromFile(testPath)
 		validation, err := os.Open("validations/" + testPath[6:])
-		//defer validation.Close()
+		defer validation.Close()
 		if err != nil {
 			assertFailingPath(t, graph, testPath)
 		} else {
@@ -84,22 +84,22 @@ func BenchmarkAlgorithm(b *testing.B) {
 
 func createBenchmarkGraph(size int) *m.Graph {
 	graph := m.CreateGraph()
-	transitionNode := m.CreateNode("tempId")
+	transitionNode := m.CreateNode("tempId", false)
 	graph.AddStartNode(transitionNode)
 	for i := 0; i < size; i++ {
 		var nodes []*m.Node
-		tempNode := m.CreateNode("tempId")
+		tempNode := m.CreateNode("tempId", false)
 		for k := 0; k < size; k++ {
-			newNode := m.CreateNode("tempId")
+			newNode := m.CreateNode("tempId", false)
 			nodes = append(nodes, newNode)
-			graph.AddEdge(createWeightedEdge(transitionNode, newNode, rand.Intn(10000)+1))
-			graph.AddEdge(createWeightedEdge(newNode, tempNode, rand.Intn(10000)+1))
+			createWeightedEdge(transitionNode, newNode, rand.Intn(10000)+1)
+			createWeightedEdge(newNode, tempNode, rand.Intn(10000)+1)
 		}
 		transitionNode = tempNode
 		for _, a := range nodes {
 			for _, b := range nodes {
 				if a != b {
-					graph.AddEdge(createWeightedEdge(a, b, rand.Intn(10000)+1))
+					createWeightedEdge(a, b, rand.Intn(10000)+1)
 				}
 			}
 		}

@@ -51,13 +51,10 @@ func (node *Node) Revisitable() bool {
 	return node.revisitable
 }
 
-func (node *Node) SetRevisitable(revisit bool) {
-	node.revisitable = revisit
-}
-
-func CreateNode(id string) *Node {
+func CreateNode(id string, revisit bool) *Node {
 	node := new(Node)
 	node.id = id
+	node.revisitable = revisit
 	node.rewards = make(map[*Reward]int)
 	node.minPathLeft = math.MaxInt32
 	return node
