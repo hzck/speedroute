@@ -1,0 +1,53 @@
+{
+  "name": "Example",
+  "description": "Describing the example.",
+  "testing": "What does this test?",
+  "visual": "START->END",
+  "rewards": [
+    {
+      "id": "A",
+      "unique": true
+    }
+  ],
+  "nodes": [
+    {
+      "id": "START"
+    },
+    {
+      "id": "END"
+    },
+    {
+      "id": "1",
+      "revisitable": true,
+      "rewards": [
+        {
+          "rewardId": "A",
+          "quantity": 1
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "1"
+    },
+    {
+      "from": "1",
+      "to": "END",
+      "weights": [
+        {
+          "requirements": [
+            {
+              "rewardId": "A",
+              "quantity": 1
+            }
+          ],
+          "time": 1
+        }
+      ]
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

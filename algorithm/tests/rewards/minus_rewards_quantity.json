@@ -1,0 +1,77 @@
+{
+  "name": "Minus rewards quantity",
+  "description": "A minus reward reduces the amount blocking a later shorter path.",
+  "testing": "Minus rewards taking into account and reducing total quantity.",
+  "visual": "START->1, 1->2, 1->END, 2->END",
+  "rewards": [
+    {
+      "id": "A"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "START",
+      "rewards": [
+        {
+          "rewardId": "A",
+          "quantity": 3
+        }
+      ]
+    },
+    {
+      "id": "END"
+    },
+    {
+      "id": "1",
+      "rewards": [
+        {
+          "rewardId": "A",
+          "quantity": -2
+        }
+      ]
+    },
+    {
+      "id": "2"
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "1"
+    },
+    {
+      "from": "1",
+      "to": "2",
+      "weights": [
+        {
+          "requirements": [
+            {
+              "rewardId": "A",
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "1",
+      "to": "END",
+      "weights": [
+        {
+          "requirements": [
+            {
+              "rewardId": "A",
+              "quantity": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "2",
+      "to": "END"
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}
