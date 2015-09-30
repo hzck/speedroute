@@ -1,4 +1,8 @@
 {
+  "name": "Revisit looping unobtainable reward",
+  "description": "A short revisiting loop as part of the graph, blocked by a reward which cannot be obtained.",
+  "testing": "Identifying loop caused by a requirement not being met to avoid getting stuck.",
+  "visual": "START->END(1000000ms), START->1, 1->START, 1->END(req A)",
   "rewards": [
     {
       "id": "A"

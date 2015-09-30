@@ -1,4 +1,8 @@
 {
+  "name": "Weighted edges",
+  "description": "A more complex example testing all possible paths, not only the one that looks good from the beginning.",
+  "testing": "All paths are traversed, not only the cheap path visible from the start node.",
+  "visual": "START->1(1ms), START->2(2ms), 1->END(7ms), 2->END(2ms)",
   "nodes": [
     {
       "id": "START"

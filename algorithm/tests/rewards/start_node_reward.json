@@ -1,4 +1,8 @@
 {
+  "name": "Start node reward",
+  "description": "Adding reward to start node will provide that reward.",
+  "testing": "Reward from start node is valid.",
+  "visual": "START->END",
   "rewards": [
     {
       "id": "A"

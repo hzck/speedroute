@@ -1,1 +1,6 @@
-{}
+{
+  "name": "Empty graph",
+  "description": "No nodes or edges present.",
+  "testing": "No program crash.",
+  "visual": ""
+}

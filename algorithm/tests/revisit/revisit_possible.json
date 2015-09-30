@@ -1,4 +1,8 @@
 {
+  "name": "Revisit possible",
+  "description": "Basic funcitonality making sure revisiting a node is possible if it's revisitable.",
+  "testing": "Revisit is possible",
+  "visual": "START->1, 1->START, START->END(req A)",
   "rewards": [
     {
       "id": "A"

@@ -1,4 +1,8 @@
 {
+  "name": "One weight no value",
+  "description": "One weight which does not contain anything should still be a valid weight.",
+  "testing": "Empty weight does not break the algorithm.",
+  "visual": "START->END",
   "nodes": [
     {
       "id": "START"

@@ -1,4 +1,8 @@
 {
+  "name": "Start node added to path",
+  "description": "Basic funcitonality making sure revisiting a node is possible if it's revisitable.",
+  "testing": "Start node is added to path and not possible to revisit",
+  "visual": "START->END(req A), START->1, 1->START, 1->END(1000000ms)",
   "rewards": [
     {
       "id": "A"
@@ -41,6 +45,15 @@
     {
       "from": "1",
       "to": "START"
+    },
+    {
+      "from": "1",
+      "to": "END",
+      "weights": [
+        {
+          "time": 1000000
+        }
+      ]
     }
   ],
   "startId": "START",

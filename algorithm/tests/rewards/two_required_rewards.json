@@ -1,4 +1,8 @@
 {
+  "name": "Two required rewards",
+  "description": "Two rewards are required on the same edge, both needs to be taken into account.",
+  "testing": "Multiple rewards on same edge.",
+  "visual": "START->1, START->2, 1->2, 2->END, 1->END",
   "rewards": [
     {
       "id": "A"

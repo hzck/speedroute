@@ -1,43 +1,26 @@
+// Package model provides model structs for a directed weighted graph.
 package model
 
-import "container/heap"
-
+// Graph includes pointers to startNode, endNode and the internal type prioQueue
 type Graph struct {
 	startNode *Node
 	endNode   *Node
-	prioQueue *PrioQueue
 }
 
+// StartNode returns startNode pointer
 func (graph *Graph) StartNode() *Node {
 	return graph.startNode
 }
 
-func (graph *Graph) AddStartNode(node *Node) {
-	graph.startNode = node
-}
-
+// EndNode returns endNode pointer
 func (graph *Graph) EndNode() *Node {
 	return graph.endNode
 }
 
-func (graph *Graph) AddEndNode(node *Node) {
-	graph.endNode = node
-}
-
-func (graph *Graph) PrioPath() *Path {
-	if graph.prioQueue.Len() > 0 {
-		return heap.Pop(graph.prioQueue).(*Path)
-	}
-	return nil
-}
-
-func (graph *Graph) AddPossiblePath(newPath *Path) {
-	heap.Push(graph.prioQueue, newPath)
-}
-
-func CreateGraph() *Graph {
+// CreateGraph is the constructor for graph taking pointers to startNode and endNode as parameters
+func CreateGraph(start, end *Node) *Graph {
 	graph := new(Graph)
-	graph.prioQueue = &PrioQueue{}
-	heap.Init(graph.prioQueue)
+	graph.startNode = start
+	graph.endNode = end
 	return graph
 }

@@ -1,4 +1,8 @@
 {
+  "name": "End node minus reward",
+  "description": "The possibility to add a minus reward to the end node.",
+  "testing": "End node minus reward is calculated into the cost.",
+  "visual": "START->END, START->1, 1->END",
   "rewards": [
     {
       "id": "A"

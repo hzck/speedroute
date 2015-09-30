@@ -1,4 +1,8 @@
 {
+  "name": "Unique reward",
+  "description": "Unique reward cannot be acquired twice.",
+  "testing": "Unique rewards blocking paths.",
+  "visual": "START->1, 1->END, START->END(10ms)",
   "rewards": [
     {
       "id": "A",

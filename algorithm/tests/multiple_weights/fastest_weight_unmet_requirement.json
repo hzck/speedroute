@@ -1,4 +1,8 @@
 {
+  "name": "Fastest weight unmet requirement",
+  "description": "Two weights possible but the fastest is blocked with a requirement.",
+  "testing": "Taking fastest possible weight available, taking requirements into account.",
+  "visual": "START->END(req=A 1ms,10ms), START->1(15ms), 1->END",
   "rewards": [
     {
       "id": "A"
@@ -10,6 +14,9 @@
     },
     {
       "id": "END"
+    },
+    {
+      "id": "1"
     }
   ],
   "edges": [
@@ -28,6 +35,19 @@
           "time": 10
         }
       ]
+    },
+    {
+      "from": "START",
+      "to": "1",
+      "weights": [
+        {
+          "time": 15
+        }
+      ]
+    },
+    {
+      "from": "1",
+      "to": "END"
     }
   ],
   "startId": "START",

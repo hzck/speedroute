@@ -1,4 +1,8 @@
 {
+  "name": "Two edges no weight value",
+  "description": "A weight which does not contain anything should still be a valid weight and default to time = 1.",
+  "testing": "No weight means time = 1.",
+  "visual": "START->END(10ms), START->1, 1->END",
   "nodes": [
     {
       "id": "START"

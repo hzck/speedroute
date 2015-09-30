@@ -1,4 +1,8 @@
 {
+  "name": "Only end node",
+  "description": "Only end node present in graph.",
+  "testing": "No program crash.",
+  "visual": "END",
   "nodes": [
     {
       "id": "END"

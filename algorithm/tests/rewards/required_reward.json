@@ -1,4 +1,8 @@
 {
+  "name": "Required reward",
+  "description": "Basic graph with a required reward.",
+  "testing": "Required reward is acquired and used.",
+  "visual": "START->1, 1->END",
   "rewards": [
     {
       "id": "A"

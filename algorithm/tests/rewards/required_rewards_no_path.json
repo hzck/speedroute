@@ -1,4 +1,8 @@
 {
+  "name": "Required rewards no path",
+  "description": "Multiple nodes providing rewards add to a total quantity which is required later.",
+  "testing": "Rewards from different nodes are added together.",
+  "visual": "START->END(1000000ms), START->1, 1->END, START->2, 2->END",
   "rewards": [
     {
       "id": "A"
@@ -32,6 +36,15 @@
     }
   ],
   "edges": [
+    {
+      "from": "START",
+      "to": "END",
+      "weights": [
+        {
+          "time": 1000000
+        }
+      ]
+    },
     {
       "from": "START",
       "to": "1"

@@ -1,3 +1,4 @@
+// Package json converts a JSON object into a graph.
 package json
 
 import (
@@ -7,39 +8,35 @@ import (
 	"io/ioutil"
 )
 
-type reward struct {
-	Id     string
-	Unique bool
-}
-
 type rewardRef struct {
-	RewardId string
-	Quantity *int
-}
-
-type node struct {
-	Id          string
-	Rewards     []rewardRef
-	Revisitable bool
-}
-
-type weight struct {
-	Time         *int
-	Requirements []rewardRef
-}
-
-type edge struct {
-	From, To string
-	Weights  []weight
+	RewardID string `json:"rewardId"`
+	Quantity *int   `json:"quantity"`
 }
 
 type graph struct {
-	Rewards        []reward
-	Nodes          []node
-	Edges          []edge
-	StartId, EndId string
+	Rewards []struct {
+		ID     string `json:"id"`
+		Unique bool   `json:"unique"`
+	} `json:"rewards"`
+	Nodes []struct {
+		ID          string      `json:"id"`
+		Rewards     []rewardRef `json:"rewards"`
+		Revisitable bool        `json:"revisitable"`
+	} `json:"nodes"`
+	Edges []struct {
+		From    string `json:"from"`
+		To      string `json:"to"`
+		Weights []struct {
+			Time         *int        `json:"time"`
+			Requirements []rewardRef `json:"requirements"`
+		} `json:"weights"`
+	} `json:"edges"`
+	StartID string `json:"startId"`
+	EndID   string `json:"endId"`
 }
 
+// CreateGraphFrom file takes a path as a parameter and creates rewards, nodes and edges before
+// returning a pointer to a graph
 func CreateGraphFromFile(path string) *m.Graph { //throw error
 	file, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -55,31 +52,27 @@ func CreateGraphFromFile(path string) *m.Graph { //throw error
 	}
 	rewards := make(map[string]*m.Reward)
 	for _, r := range g.Rewards {
-		reward := m.CreateReward(r.Id, r.Unique)
-		rewards[reward.Id()] = reward
+		rewards[r.ID] = m.CreateReward(r.ID, r.Unique)
 	}
 	nodes := make(map[string]*m.Node)
 	for _, n := range g.Nodes {
-		node := m.CreateNode(n.Id, n.Revisitable)
+		node := m.CreateNode(n.ID, n.Revisitable)
 		for _, reward := range n.Rewards {
-			node.AddReward(rewards[reward.RewardId], getPointerValueOrOne(reward.Quantity)) //duplicate code
+			node.AddReward(rewards[reward.RewardID], getPointerValueOrOne(reward.Quantity)) //duplicate code
 		}
-		nodes[node.Id()] = node
+		nodes[node.ID()] = node
 	}
-	graph := m.CreateGraph()
 	for _, e := range g.Edges {
 		edge := m.CreateEdge(nodes[e.From], nodes[e.To])
 		for _, w := range e.Weights {
 			weight := m.CreateWeight(getPointerValueOrOne(w.Time))
 			for _, reward := range w.Requirements {
-				weight.AddRequirement(rewards[reward.RewardId], getPointerValueOrOne(reward.Quantity)) //duplicate code
+				weight.AddRequirement(rewards[reward.RewardID], getPointerValueOrOne(reward.Quantity)) //duplicate code
 			}
 			edge.AddWeight(weight)
 		}
 	}
-	graph.AddStartNode(nodes[g.StartId])
-	graph.AddEndNode(nodes[g.EndId])
-	return graph
+	return m.CreateGraph(nodes[g.StartID], nodes[g.EndID])
 }
 
 func getPointerValueOrOne(ptr *int) int {

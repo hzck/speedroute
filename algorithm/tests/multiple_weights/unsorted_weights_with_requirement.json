@@ -1,4 +1,8 @@
 {
+  "name": "Unsorted weights with requirement",
+  "description": "Multiple weights on several edges and two possible paths, with a requirement.",
+  "testing": "Taking fastest possible weight from an unsorted list and taking requirements into account.",
+  "visual": "START->END(25ms,req=A 10ms), START->1(10ms), 1->END(20ms,req=A 10ms)",
   "rewards": [
     {
       "id": "A"

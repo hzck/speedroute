@@ -1,4 +1,8 @@
 {
+  "name": "Revisit looping",
+  "description": "A short revisiting loop as part of the graph.",
+  "testing": "Identifying loop to avoid getting stuck and taking up memory.",
+  "visual": "START->END(1000000ms), START->1, 1->START",
   "nodes": [
     {
       "id": "START",

@@ -1,4 +1,8 @@
 {
+  "name": "One possible path",
+  "description": "Basic case with one possible path through several nodes.",
+  "testing": "Possible to find a path through several nodes.",
+  "visual": "START->1, 1->2, 2->END",
   "nodes": [
     {
       "id": "START"

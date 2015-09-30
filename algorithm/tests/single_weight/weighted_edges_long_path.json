@@ -1,4 +1,8 @@
 {
+  "name": "Weighted edges long path",
+  "description": "Taking the long and cheaper path even though a path with fewer nodes is possible.",
+  "testing": "All paths are traversed, not only the path to end node visible from the start node.",
+  "visual": "START->1(1ms), 1->2(1ms), 2->3(1ms), 3->END(1ms), START->END(10ms)",
   "nodes": [
     {
       "id": "START"

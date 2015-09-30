@@ -1,4 +1,8 @@
 {
+  "name": "Three nodes visited requirement",
+  "description": "Example graph where three nodes other than START and END has to be visited before collecting a required reward needed to get to END.",
+  "testing": "Node count functionality and required reward.",
+  "visual": "TODO",
   "rewards": [
     {
       "id": "REQUIRED_NODE"

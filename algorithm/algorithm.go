@@ -1,3 +1,4 @@
+// Package algorithm calculates the shortest path in a directed, weighted graph with a set of requirements.
 package algorithm
 
 import (
@@ -5,6 +6,8 @@ import (
 	m "github.com/hzck/speedroute/model"
 )
 
+// Route takes a created graph object and finds the shortest path from start to end, returning
+// that path as a list of edges
 func Route(graph *m.Graph) []*m.Edge {
 	if graph.StartNode() == nil || graph.EndNode() == nil {
 		return nil
@@ -12,26 +15,35 @@ func Route(graph *m.Graph) []*m.Edge {
 	addMinPathLeft(graph)
 	startPath := m.CreatePath()
 	startPath.AddRewards(graph.StartNode().Rewards())
-	addNodeEdgesToPrioQueue(graph, graph.StartNode(), startPath)
-	for path := graph.PrioPath(); path != nil; path = graph.PrioPath() {
+	pq := &m.PrioQueue{}
+	heap.Init(pq)
+	addNodeEdgesToPrioQueue(pq, graph.StartNode(), startPath)
+	for path := prioPath(pq); path != nil; path = prioPath(pq) {
 		node := path.Edges()[len(path.Edges())-1].To()
 		if node == graph.EndNode() {
 			return path.Edges()
 		}
-		addNodeEdgesToPrioQueue(graph, node, path)
+		addNodeEdgesToPrioQueue(pq, node, path)
 	}
 	return nil
 }
 
-func addNodeEdgesToPrioQueue(graph *m.Graph, node *m.Node, path *m.Path) {
+func addNodeEdgesToPrioQueue(pq *m.PrioQueue, node *m.Node, path *m.Path) {
 	for _, edge := range node.FromEdges() {
 		ok, i := path.PossibleRoute(edge)
 		if ok {
 			newPath := path.Copy()
 			newPath.AddEdge(edge, i)
-			graph.AddPossiblePath(newPath)
+			heap.Push(pq, newPath)
 		}
 	}
+}
+
+func prioPath(pq *m.PrioQueue) *m.Path {
+	if pq.Len() > 0 {
+		return heap.Pop(pq).(*m.Path)
+	}
+	return nil
 }
 
 func addMinPathLeft(graph *m.Graph) {

@@ -1,4 +1,8 @@
 {
+  "name": "Only start node",
+  "description": "Only start node present in graph.",
+  "testing": "No program crash.",
+  "visual": "START",
   "nodes": [
     {
       "id": "START"

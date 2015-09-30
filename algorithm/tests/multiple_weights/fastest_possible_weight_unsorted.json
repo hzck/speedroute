@@ -1,4 +1,8 @@
 {
+  "name": "Fastest possible weight unsorted",
+  "description": "Multiple unsorted weights possible, making sure fastest is taken.",
+  "testing": "Taking fastest possible weight available, even though weights aren't sorted.",
+  "visual": "START->END(20ms,10ms), START->1(15ms), 1->END",
   "nodes": [
     {
       "id": "START"

@@ -1,4 +1,8 @@
 {
+  "name": "Required reward quantity added to total",
+  "description": "Multiple nodes providing rewards add to a total quantity which is required later.",
+  "testing": "Rewards from different nodes are added together.",
+  "visual": "START->1, 1->END",
   "rewards": [
     {
       "id": "A"

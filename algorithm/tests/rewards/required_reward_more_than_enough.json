@@ -1,4 +1,8 @@
 {
+  "name": "Required reward more than enough",
+  "description": "Single required reward where multiple rewards has been acquired.",
+  "testing": "Required reward is acquired and used.",
+  "visual": "START->1, 1->END",
   "rewards": [
     {
       "id": "A"

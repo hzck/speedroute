@@ -1,16 +1,31 @@
 {
+  "name": "One edge wrong direction",
+  "description": "One edge pointing in wrong direction.",
+  "testing": "No edges pointing in wrong direction is added to the path.",
+  "visual": "START->1, 1->END, END->START",
   "nodes": [
     {
       "id": "START"
     },
     {
       "id": "END"
+    },
+    {
+      "id": "1"
     }
   ],
   "edges": [
     {
       "from": "END",
       "to": "START"
+    },
+    {
+      "from": "START",
+      "to": "1"
+    },
+    {
+      "from": "1",
+      "to": "END"
     }
   ],
   "startId": "START",

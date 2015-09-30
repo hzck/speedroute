@@ -1,4 +1,8 @@
 {
+  "name": "Looping graph",
+  "description": "Small looping part in graph.",
+  "testing": "Not getting stuck in an endless loop.",
+  "visual": "START->1, 1->START, 1->END",
   "nodes": [
     {
       "id": "START"

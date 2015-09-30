@@ -1,4 +1,8 @@
 {
+  "name": "Minus rewards possible",
+  "description": "A minus reward on the shortest path which cannot been acquired unless taking a detour.",
+  "testing": "Minus rewards taking into account.",
+  "visual": "START->1, START->2, 1->2, 2->END",
   "rewards": [
     {
       "id": "A"

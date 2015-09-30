@@ -1,4 +1,8 @@
 {
+  "name": "Least possible nodes path",
+  "description": "A path is considered shorter if less nodes are traversed when the total time is equal.",
+  "testing": "Least nodes gives shorter path if total time is equal.",
+  "visual": "START->1(5ms), 1->END(5ms), START->END(10ms)",
   "nodes": [
     {
       "id": "START"

@@ -1,4 +1,8 @@
 {
+  "name": "One weighted edge",
+  "description": "Edges with no weights will have the default value of 1, to not end up in endless loops.",
+  "testing": "No weight means time = 1.",
+  "visual": "START->END(2ms), START->1, 1->2, 2->END",
   "nodes": [
     {
       "id": "START"

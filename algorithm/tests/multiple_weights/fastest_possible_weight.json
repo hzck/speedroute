@@ -1,4 +1,8 @@
 {
+  "name": "Fastest possible weight",
+  "description": "Basic multiple weights possible, making sure fastest is taken.",
+  "testing": "Taking fastest possible weight available.",
+  "visual": "START->END(10ms,20ms), START->1(15ms), 1->END",
   "nodes": [
     {
       "id": "START"

@@ -1,4 +1,8 @@
 {
+  "name": "One edge",
+  "description": "Most basic graph with one edge.",
+  "testing": "Finding the single path available.",
+  "visual": "START->END",
   "nodes": [
     {
       "id": "START"

@@ -10,6 +10,9 @@ import (
 	"testing"
 )
 
+// TestAllFiles goes through tests/ folder and tries to route a path, verifying towards files
+// in validations/ folder. Folder structure is the same in both tests/ and validations/ to
+// know which validation belongs to which test case.
 func TestAllFiles(t *testing.T) {
 	for _, testPath := range getDirFileNames("tests/") {
 		graph := json.CreateGraphFromFile(testPath)
@@ -56,8 +59,8 @@ func assertCorrectPath(t *testing.T, nodes []string, path []*m.Edge, testPath st
 		failAndPrint(t, "assertCorrectPath - len: "+testPath)
 	}
 	for i, edge := range path {
-		if edge.From().Id() != nodes[i] || edge.To().Id() != nodes[i+1] {
-			failAndPrint(t, "assertCorrectPath - correct "+nodes[i]+"->"+nodes[i+1]+", is "+edge.From().Id()+"->"+edge.To().Id()+": "+testPath)
+		if edge.From().ID() != nodes[i] || edge.To().ID() != nodes[i+1] {
+			failAndPrint(t, "assertCorrectPath - correct "+nodes[i]+"->"+nodes[i+1]+", is "+edge.From().ID()+"->"+edge.To().ID()+": "+testPath)
 		}
 	}
 }
@@ -67,8 +70,9 @@ func failAndPrint(t *testing.T, testPath string) {
 	fmt.Println("Failing " + testPath)
 }
 
-func TestBenchMarkGraph(t *testing.T) {
-	size := 2
+// TestBenchmarkGraph verifies that the benchmarking randomized graph works.
+func TestBenchmarkGraph(t *testing.T) {
+	size := 4
 	graph := createBenchmarkGraph(size)
 	path := Route(graph)
 	if len(path) != size*2 {
@@ -76,16 +80,18 @@ func TestBenchMarkGraph(t *testing.T) {
 	}
 }
 
+// BenchmarkAlgorithm consists of an int of the magnitude the graph should be benchmarked against.
 func BenchmarkAlgorithm(b *testing.B) {
 	graph := createBenchmarkGraph(30)
 	b.ResetTimer()
 	Route(graph)
 }
 
+// createBenchmarkGraph creates a graph from an int parameter specifying the magnitude of the graph.
+// Nodes: n²+n+1. Edges: n³+n². Possible paths: (can't remember)
 func createBenchmarkGraph(size int) *m.Graph {
-	graph := m.CreateGraph()
 	transitionNode := m.CreateNode("tempId", false)
-	graph.AddStartNode(transitionNode)
+	startNode := transitionNode
 	for i := 0; i < size; i++ {
 		var nodes []*m.Node
 		tempNode := m.CreateNode("tempId", false)
@@ -104,8 +110,7 @@ func createBenchmarkGraph(size int) *m.Graph {
 			}
 		}
 	}
-	graph.AddEndNode(transitionNode)
-	return graph
+	return m.CreateGraph(startNode, transitionNode)
 }
 
 func createWeightedEdge(from, to *m.Node, time int) *m.Edge {

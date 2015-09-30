@@ -1,4 +1,8 @@
 {
+  "name": "No edges",
+  "description": "No edges present.",
+  "testing": "No program crash.",
+  "visual": "START,END",
   "nodes": [
     {
       "id": "START"
