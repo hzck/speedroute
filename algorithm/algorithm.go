@@ -7,7 +7,7 @@ import (
 )
 
 // Route takes a created graph object and finds the shortest path from start to end, returning
-// that path as a list of edges
+// that path as a list of edges.
 func Route(graph *m.Graph) []*m.Edge {
 	if graph.StartNode() == nil || graph.EndNode() == nil {
 		return nil

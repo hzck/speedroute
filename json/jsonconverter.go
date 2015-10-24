@@ -35,8 +35,8 @@ type graph struct {
 	EndID   string `json:"endId"`
 }
 
-// CreateGraphFrom file takes a path as a parameter and creates rewards, nodes and edges before
-// returning a pointer to a graph
+// CreateGraphFromFile takes a path as a parameter and creates rewards, nodes and edges before
+// returning a pointer to a graph.
 func CreateGraphFromFile(path string) *m.Graph { //throw error
 	file, err := ioutil.ReadFile(path)
 	if err != nil {

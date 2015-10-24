@@ -5,13 +5,11 @@ import (
 	"testing"
 )
 
+// TestNodeFromEdges tests that when creating an edge, from and to node gets correctly populated.
 func TestNodeFromEdges(t *testing.T) {
-	graph := new(Graph)
 	startNode := new(Node)
 	endNode := new(Node)
 	CreateEdge(startNode, endNode)
-	graph.AddStartNode(startNode)
-	graph.AddEndNode(endNode)
 	if len(startNode.FromEdges()) != 1 {
 		t.Fail()
 		fmt.Println("No start node from edge")
