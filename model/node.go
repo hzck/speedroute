@@ -2,7 +2,7 @@ package model
 
 import "math"
 
-// Node stores all information about nodes like neighboring edges, rewards and if it's revisitable
+// Node stores all information about nodes like neighboring edges, rewards and if it's revisitable.
 type Node struct {
 	fromEdges   []*Edge
 	toEdges     []*Edge
@@ -12,47 +12,47 @@ type Node struct {
 	revisitable bool
 }
 
-// FromEdges returns all edges which has this node as a from node
+// FromEdges returns all edges which has this node as a from node.
 func (node *Node) FromEdges() []*Edge {
 	return node.fromEdges
 }
 
-//AddFromEdge adds an edge which has this node as a from edge
+//AddFromEdge adds an edge which has this node as a from edge.
 func (node *Node) AddFromEdge(edge *Edge) {
 	node.fromEdges = append(node.fromEdges, edge)
 }
 
-// ToEdges returns all edges which has this node as a to node
+// ToEdges returns all edges which has this node as a to node.
 func (node *Node) ToEdges() []*Edge {
 	return node.toEdges
 }
 
-//AddToEdge adds an edge which has this node as a to edge
+//AddToEdge adds an edge which has this node as a to edge.
 func (node *Node) AddToEdge(edge *Edge) {
 	node.toEdges = append(node.toEdges, edge)
 }
 
-// ID returns node id
+// ID returns node id.
 func (node *Node) ID() string {
 	return node.id
 }
 
-// Rewards returns the node rewards as a map with quantity
+// Rewards returns the node rewards as a map with quantity.
 func (node *Node) Rewards() map[*Reward]int {
 	return node.rewards
 }
 
-// AddReward sets a node reward with quantity
+// AddReward sets a node reward with quantity.
 func (node *Node) AddReward(reward *Reward, quantity int) {
 	node.rewards[reward] = quantity
 }
 
-//MinPathLeft returns minimum path left to end node or math.MaxInt32 if not known
+//MinPathLeft returns minimum path left to end node or math.MaxInt32 if not known.
 func (node *Node) MinPathLeft() int {
 	return node.minPathLeft
 }
 
-// SetMinPathLeft sets the minimum path left to end node
+// SetMinPathLeft sets the minimum path left to end node.
 func (node *Node) SetMinPathLeft(mpl int) {
 	node.minPathLeft = mpl
 }

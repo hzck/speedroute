@@ -88,7 +88,7 @@ func BenchmarkAlgorithm(b *testing.B) {
 }
 
 // createBenchmarkGraph creates a graph from an int parameter specifying the magnitude of the graph.
-// Nodes: n²+n+1. Edges: n³+n². Possible paths: (can't remember)
+// Nodes: n²+n+1. Edges: n³+n². Possible paths: (can't remember).
 func createBenchmarkGraph(size int) *m.Graph {
 	transitionNode := m.CreateNode("tempId", false)
 	startNode := transitionNode
