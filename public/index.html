@@ -1,0 +1,49 @@
+<html ng-app="speedrunRouting">
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/vis.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/speedroute.css" />
+        <script type="text/javascript" src="js/vis.min.js"></script>
+        <script type="text/javascript" src="js/angular.min.js"></script>
+        <script type="text/javascript" src="js/angular-vis.js"></script>
+        <script type="text/javascript" src="js/ui-bootstrap-tpls-0.13.0.min.js"></script>
+        <script type="text/javascript" src="js/speedroute.js"></script>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div ng-include="'header.html'"></div>
+            <div class="row main" ng-controller="RouteCtrl as g">
+                <div class="jumbotron">
+                      <h1>Welcome to Speedroute</h1>
+                      <p>You are one click away from routing your favourite game.</p>
+
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="name">Name</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" id="name" placeholder="Name" ng-model="g.name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="password">Code</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" id="password" placeholder="Code" ng-model="g.password">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="livesplit">LiveSplit data</label>
+                            <div class="col-sm-3">
+                                <textarea class="form-control" rows="5" id="livesplit" ng-model="g.livesplit"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-3">
+                                <button class="btn btn-default btn-lg" ng-click="g.createGraph()">Create Graph</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

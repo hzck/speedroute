@@ -3,8 +3,8 @@ package algorithm
 import (
 	"bufio"
 	"fmt"
-	"github.com/hzck/speedroute/json"
 	m "github.com/hzck/speedroute/model"
+	"github.com/hzck/speedroute/parser"
 	"math/rand"
 	"os"
 	"testing"
@@ -15,7 +15,7 @@ import (
 // know which validation belongs to which test case.
 func TestAllFiles(t *testing.T) {
 	for _, testPath := range getDirFileNames("tests/") {
-		graph := json.CreateGraphFromFile(testPath)
+		graph := parser.CreateGraphFromFile(testPath)
 		validation, err := os.Open("validations/" + testPath[6:])
 		defer validation.Close()
 		if err != nil {
