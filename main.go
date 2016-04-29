@@ -11,7 +11,10 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync"
 )
+
+var mutex = &sync.Mutex{}
 
 type iIOUtil interface {
 	ReadDir(dirname string) ([]string, error)
@@ -95,7 +98,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer f.Close()
+	defer func() {
+		if closeErr := f.Close(); closeErr != nil && err == nil {
+			panic(closeErr)
+		}
+	}()
 	log.SetOutput(f)
 	log.Println("### Server started ###")
 	fs := osFS{}
@@ -110,17 +117,27 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8001", r))
 }
 
-func createFile(fs iFileSystem, filename, fileContent string) (int, error) {
+func createFile(fs iFileSystem, filename, fileContent string) (httpStatus int, err error) {
 	file, err := fs.Create(filename)
 	if err != nil {
 		log.Println(err)
 		return http.StatusInternalServerError, err
 	}
-	defer file.Close()
+	defer func() {
+		if closeErr := file.Close(); closeErr != nil && err == nil {
+			log.Println(closeErr)
+			httpStatus = http.StatusInternalServerError
+			err = closeErr
+			return
+		}
+	}()
 	_, err = file.WriteString(fileContent)
 	if err != nil {
 		log.Println(err)
-		fs.Remove(filename)
+		removeErr := fs.Remove(filename)
+		if removeErr != nil {
+			log.Println(removeErr)
+		}
 		return http.StatusInternalServerError, err
 	}
 	return http.StatusCreated, nil
@@ -149,7 +166,10 @@ func createGraphHandler(fs iFileSystem) http.HandlerFunc {
 				pwFilename := "passwords/" + mux.Vars(r)["id"] + ".txt"
 				httpStatus, err = createFile(fs, pwFilename, mux.Vars(r)["pw"])
 				if err != nil {
-					fs.Remove(filename)
+					removeErr := fs.Remove(filename)
+					if removeErr != nil {
+						log.Println(removeErr)
+					}
 				}
 			}
 			w.WriteHeader(httpStatus)
@@ -163,16 +183,22 @@ func getGraphHandler(fs iFileSystem) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		filename := "graphs/" + mux.Vars(r)["id"] + ".json"
 		if _, err := fs.Stat(filename); fs.IsNotExist(err) {
+			log.Println(err)
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
 		content, err := ioutil.ReadFile(filename)
 		if err != nil {
+			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		w.Write(content)
+		_, err = w.Write(content)
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 		return
 	}
 }
@@ -200,16 +226,26 @@ func saveGraphHandler(fs iFileSystem) http.HandlerFunc {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		ioutil.WriteFile(filename, newGraph, 0644)
+		err = ioutil.WriteFile(filename, newGraph, 0644)
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		// Potential bottleneck draining memory, making sure only one graph is routed at any moment.
+		mutex.Lock()
 		result := a.Route(p.CreateGraphFromFile(filename))
+		mutex.Unlock()
 		js, err := p.CreateJSONFromRoutedPath(result)
 		w.Header().Set("Content-Type", "application/json")
 		if err != nil {
+			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		_, err = w.Write(js)
 		if err != nil {
+			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -220,17 +256,20 @@ func listGraphsHandler(io iIOUtil) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		graphs, err := io.ReadDir("graphs")
 		if err != nil {
+			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		js, err := json.Marshal(graphs)
 		if err != nil {
+			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
 		_, err = w.Write(js)
 		if err != nil {
+			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}

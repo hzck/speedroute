@@ -90,6 +90,8 @@ func getPointerValueOrOne(ptr *int) int {
 	return 1
 }
 
+// CreateJSONFromRoutedPath takes an array of edges and creates an array of the included nodes,
+// and marshals it as json data in a byte array.
 func CreateJSONFromRoutedPath(path []*m.Edge) ([]byte, error) {
 	if path == nil || len(path) == 0 {
 		return json.Marshal(path)

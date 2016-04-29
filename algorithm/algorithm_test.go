@@ -17,24 +17,32 @@ func TestAllFiles(t *testing.T) {
 	for _, testPath := range getDirFileNames("tests/") {
 		graph := parser.CreateGraphFromFile(testPath)
 		validation, err := os.Open("validations/" + testPath[6:])
-		defer validation.Close()
+		defer func() {
+			if closeErr := validation.Close(); closeErr != nil && err == nil {
+				failAndPrint(t, closeErr.Error())
+			}
+		}()
 		if err != nil {
 			assertFailingPath(t, graph, testPath)
-		} else {
-			var path []string
-			scanner := bufio.NewScanner(validation)
-			for scanner.Scan() {
-				path = append(path, scanner.Text())
-			}
-			assertCorrectPath(t, path, Route(graph), testPath)
+			continue
 		}
+		var path []string
+		scanner := bufio.NewScanner(validation)
+		for scanner.Scan() {
+			path = append(path, scanner.Text())
+		}
+		assertCorrectPath(t, path, Route(graph), testPath)
 	}
 }
 
 func getDirFileNames(dirName string) []string {
 	var fileNames []string
 	dir, _ := os.Open(dirName)
-	defer dir.Close()
+	defer func() {
+		if closeErr := dir.Close(); closeErr != nil && err == nil {
+			failAndPrint(t, closeErr.Error())
+		}
+	}()
 	files, _ := dir.Readdir(-1)
 	for _, file := range files {
 		if file.IsDir() {
