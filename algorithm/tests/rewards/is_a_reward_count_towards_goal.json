@@ -1,0 +1,53 @@
+{
+  "name": "Is a reward count towards goal",
+  "description": "IsA relationship counts towards total goal of requirements.",
+  "testing": "Reward is added to total if its inherited.",
+  "visual": "START->END",
+  "rewards": [
+    {
+      "id": "A"
+    },
+    {
+      "id": "B",
+      "isA": "A"
+    },
+    {
+      "id": "C",
+      "isA": "A"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "START",
+      "rewards": [
+        {
+          "rewardId": "B"
+        },
+        {
+          "rewardId": "C"
+        }
+      ]
+    },
+    {
+      "id": "END"
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "END",
+      "weights": [
+        {
+          "requirements": [
+            {
+              "rewardId": "A",
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

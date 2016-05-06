@@ -14,7 +14,7 @@ import (
 // in validations/ folder. Folder structure is the same in both tests/ and validations/ to
 // know which validation belongs to which test case.
 func TestAllFiles(t *testing.T) {
-	for _, testPath := range getDirFileNames("tests/") {
+	for _, testPath := range getDirFileNames(t, "tests/") {
 		graph := parser.CreateGraphFromFile(testPath)
 		validation, err := os.Open("validations/" + testPath[6:])
 		defer func() {
@@ -35,18 +35,22 @@ func TestAllFiles(t *testing.T) {
 	}
 }
 
-func getDirFileNames(dirName string) []string {
+func getDirFileNames(t *testing.T, dirName string) []string {
 	var fileNames []string
-	dir, _ := os.Open(dirName)
+	dir, err := os.Open(dirName)
 	defer func() {
 		if closeErr := dir.Close(); closeErr != nil && err == nil {
-			failAndPrint(t, closeErr.Error())
+			failAndPrint(t, "Can't close dir: "+closeErr.Error())
 		}
 	}()
+	if err != nil {
+		failAndPrint(t, "Can't open dir: "+err.Error())
+		return nil
+	}
 	files, _ := dir.Readdir(-1)
 	for _, file := range files {
 		if file.IsDir() {
-			for _, fileName := range getDirFileNames(dirName + file.Name() + "/") {
+			for _, fileName := range getDirFileNames(t, dirName+file.Name()+"/") {
 				fileNames = append(fileNames, fileName)
 			}
 			continue

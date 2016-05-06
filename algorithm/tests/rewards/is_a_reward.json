@@ -1,0 +1,45 @@
+{
+  "name": "Is a reward",
+  "description": "Basic example where one reward can count as another reward.",
+  "testing": "Reward is counted even if it's not specified directly.",
+  "visual": "START->END",
+  "rewards": [
+    {
+      "id": "A"
+    },
+    {
+      "id": "B",
+      "isA": "A"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "START",
+      "rewards": [
+        {
+          "rewardId": "B"
+        }
+      ]
+    },
+    {
+      "id": "END"
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "END",
+      "weights": [
+        {
+          "requirements": [
+            {
+              "rewardId": "A"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

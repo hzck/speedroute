@@ -1,0 +1,47 @@
+{
+  "name": "From to node equal",
+  "description": "When from node and to node is equal it should be possible to revisit if revisitable is set to true.",
+  "testing": "Revisit is possible when from = to",
+  "visual": "START->START, START->END(req 2A)",
+  "rewards": [
+    {
+      "id": "A"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "START",
+      "revisitable": true,
+      "rewards": [
+        {
+          "rewardId": "A"
+        }
+      ]
+    },
+    {
+      "id": "END"
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "START"
+    },
+    {
+      "from": "START",
+      "to": "END",
+      "weights": [
+        {
+          "requirements": [
+            {
+              "rewardId": "A",
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

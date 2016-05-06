@@ -3,9 +3,6 @@ package parser
 import (
 	"encoding/json"
 	"encoding/xml"
-	"math"
-	"strconv"
-	"strings"
 )
 
 type segments struct {
@@ -41,26 +38,4 @@ func LivesplitXMLtoJSON(data string) (string, error) {
 		return "", err
 	}
 	return string(result), nil
-}
-
-func parseTime(time string) (int, error) {
-	times := strings.Split(time, ":")
-	hours, err := strconv.ParseInt(times[0], 10, 0)
-	if err != nil {
-		return -1, err
-	}
-	minutes, err := strconv.ParseInt(times[1], 10, 0)
-	if err != nil {
-		return -1, err
-	}
-	ms, err := strconv.ParseFloat(times[2], 64)
-	if err != nil {
-		return -1, err
-	}
-	result := (int(hours)*60+int(minutes))*60*1000 + int(round(ms*1000))
-	return result, nil
-}
-
-func round(f float64) float64 {
-	return math.Floor(f + .5)
 }

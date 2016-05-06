@@ -1,0 +1,73 @@
+{
+  "name": "From to node equal",
+  "description": "When from node and to node is equal but not revisitable, it shouldn't be possible to take that path.",
+  "testing": "Revisit is not possible when from = to when not revisitable",
+  "visual": "START->START, START->1, 1->END(req 2A), START->END(req 2A)",
+  "rewards": [
+    {
+      "id": "A"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "START",
+      "revisitable": false,
+      "rewards": [
+        {
+          "rewardId": "A"
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "rewards": [
+        {
+          "rewardId": "A"
+        }
+      ]
+    },
+    {
+      "id": "END"
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "START"
+    },
+    {
+      "from": "START",
+      "to": "1"
+    },
+    {
+      "from": "1",
+      "to": "END",
+      "weights": [
+        {
+          "requirements": [
+            {
+              "rewardId": "A",
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "START",
+      "to": "END",
+      "weights": [
+        {
+          "requirements": [
+            {
+              "rewardId": "A",
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

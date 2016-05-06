@@ -1,0 +1,55 @@
+{
+  "name": "Is a reward two step inheritance",
+  "description": "IsA relationship works even if it has multiple steps of inheritance.",
+  "testing": "Rewards counts even if inherited and can be counted as multiple types.",
+  "visual": "START->END",
+  "rewards": [
+    {
+      "id": "A"
+    },
+    {
+      "id": "B",
+      "isA": "A"
+    },
+    {
+      "id": "C",
+      "isA": "B"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "START",
+      "rewards": [
+        {
+          "rewardId": "C"
+        }
+      ]
+    },
+    {
+      "id": "END"
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "END",
+      "weights": [
+        {
+          "requirements": [
+            {
+              "rewardId": "A"
+            },
+            {
+              "rewardId": "B"
+            },
+            {
+              "rewardId": "C"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

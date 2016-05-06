@@ -1,0 +1,55 @@
+{
+  "name": "Is a reward double inheritance wrong order",
+  "description": "IsA double inheritance with mixed order in file.",
+  "testing": "That an unsorted rewards array can be parsed correctly.",
+  "visual": "START->END",
+  "edges": [
+    {
+      "from": "START",
+      "to": "END",
+      "weights": [
+        {
+          "requirements": [
+            {
+              "rewardId": "A"
+            },
+            {
+              "rewardId": "B"
+            },
+            {
+              "rewardId": "C"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "START",
+      "rewards": [
+        {
+          "rewardId": "C"
+        }
+      ]
+    },
+    {
+      "id": "END"
+    }
+  ],
+  "rewards": [
+    {
+      "id": "C",
+      "isA": "B"
+    },
+    {
+      "id": "B",
+      "isA": "A"
+    },
+    {
+      "id": "A"
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

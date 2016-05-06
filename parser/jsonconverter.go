@@ -24,6 +24,7 @@ type graph struct {
 type reward struct {
 	ID     string `json:"id"`
 	Unique bool   `json:"unique"`
+	IsA    string `json:"isA"`
 }
 
 type node struct {
@@ -59,14 +60,21 @@ func CreateGraphFromFile(path string) *m.Graph { //throw error
 		//add error handling here
 	}
 	rewards := make(map[string]*m.Reward)
-	for _, r := range g.Rewards {
-		rewards[r.ID] = m.CreateReward(r.ID, r.Unique)
+	//ugly loop to make sure to handle different ordered rewards
+	for rewardAdded := true; rewardAdded == true; {
+		rewardAdded = false
+		for _, r := range g.Rewards {
+			if rewards[r.ID] == nil && (r.IsA == "" || rewards[r.IsA] != nil) {
+				rewards[r.ID] = m.CreateReward(r.ID, r.Unique, rewards[r.IsA])
+				rewardAdded = true
+			}
+		}
 	}
 	nodes := make(map[string]*m.Node)
 	for _, n := range g.Nodes {
 		node := m.CreateNode(n.ID, n.Revisitable)
-		for _, reward := range n.Rewards {
-			node.AddReward(rewards[reward.RewardID], getPointerValueOrOne(reward.Quantity)) //duplicate code
+		for _, rewardRef := range n.Rewards {
+			node.AddReward(rewards[rewardRef.RewardID], getPointerValueOrOne(rewardRef.Quantity)) //duplicate code
 		}
 		nodes[node.ID()] = node
 	}
@@ -74,8 +82,8 @@ func CreateGraphFromFile(path string) *m.Graph { //throw error
 		edge := m.CreateEdge(nodes[e.From], nodes[e.To])
 		for _, w := range e.Weights {
 			weight := m.CreateWeight(getPointerValueOrOne(w.Time))
-			for _, reward := range w.Requirements {
-				weight.AddRequirement(rewards[reward.RewardID], getPointerValueOrOne(reward.Quantity)) //duplicate code
+			for _, rewardRef := range w.Requirements {
+				weight.AddRequirement(rewards[rewardRef.RewardID], getPointerValueOrOne(rewardRef.Quantity)) //duplicate code
 			}
 			edge.AddWeight(weight)
 		}

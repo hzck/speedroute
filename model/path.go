@@ -105,11 +105,19 @@ func (path *Path) requirementsMet(edge *Edge) (bool, int) {
 
 func (path *Path) weightRequirementsMet(weight *Weight) bool {
 	for reward, quantity := range weight.Requirements() {
-		if path.Rewards()[reward] < quantity {
+		if path.countRewardsIncludingIsA(reward) < quantity {
 			return false
 		}
 	}
 	return true
+}
+
+func (path *Path) countRewardsIncludingIsA(reward *Reward) int {
+	count := path.Rewards()[reward]
+	for _, r := range reward.CanBe() {
+		count += path.countRewardsIncludingIsA(r)
+	}
+	return count
 }
 
 // PrioQueue is a list of Path pointers and implements heap interface.
