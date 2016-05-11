@@ -232,10 +232,18 @@ func saveGraphHandler(fs iFileSystem) http.HandlerFunc {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+
+		graph, err := p.CreateGraphFromFile(filename)
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
 		// Potential bottleneck draining memory, making sure only one graph is routed at any moment.
 		// Should add timing in log if it takes > 1s?
 		mutex.Lock()
-		result := a.Route(p.CreateGraphFromFile(filename))
+		result := a.Route(graph)
 		mutex.Unlock()
 		js, err := p.CreateJSONFromRoutedPath(result)
 		w.Header().Set("Content-Type", "application/json")

@@ -23,7 +23,7 @@
       "to": "END",
       "weights": [
         {
-          "time": 2
+          "time": "2"
         }
       ]
     },

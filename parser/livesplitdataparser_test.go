@@ -111,7 +111,7 @@ func TestParseVersion16(t *testing.T) {
         "to": "This is 1",
         "weights": [
           {
-            "time": 4920,
+            "time": "00:00:04.9200000",
             "requirements": []
           }
         ]
@@ -121,7 +121,7 @@ func TestParseVersion16(t *testing.T) {
         "to": "2 fo' sho'",
         "weights": [
           {
-            "time": 4661,
+            "time": "00:00:04.6610000",
             "requirements": []
           }
         ]
@@ -131,7 +131,7 @@ func TestParseVersion16(t *testing.T) {
         "to": "Segment 3",
         "weights": [
           {
-            "time": 2912,
+            "time": "00:00:02.9120000",
             "requirements": []
           }
         ]
@@ -141,7 +141,7 @@ func TestParseVersion16(t *testing.T) {
         "to": "4",
         "weights": [
           {
-            "time": 25368,
+            "time": "00:00:25.3680000",
             "requirements": []
           }
         ]
@@ -151,7 +151,7 @@ func TestParseVersion16(t *testing.T) {
         "to": "5",
         "weights": [
           {
-            "time": 44401674,
+            "time": "12:20:01.6740000",
             "requirements": []
           }
         ]
@@ -161,7 +161,7 @@ func TestParseVersion16(t *testing.T) {
         "to": "6",
         "weights": [
           {
-            "time": 7323448,
+            "time": "02:02:03.4480000",
             "requirements": []
           }
         ]
@@ -171,7 +171,7 @@ func TestParseVersion16(t *testing.T) {
         "to": "7",
         "weights": [
           {
-            "time": 353,
+            "time": "00:00:00.3525000",
             "requirements": []
           }
         ]
@@ -181,7 +181,7 @@ func TestParseVersion16(t *testing.T) {
         "to": "8 going to the end",
         "weights": [
           {
-            "time": 3752,
+            "time": "00:00:03.7524000",
             "requirements": []
           }
         ]

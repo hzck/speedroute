@@ -15,7 +15,10 @@ import (
 // know which validation belongs to which test case.
 func TestAllFiles(t *testing.T) {
 	for _, testPath := range getDirFileNames(t, "tests/") {
-		graph := parser.CreateGraphFromFile(testPath)
+		graph, err := parser.CreateGraphFromFile(testPath)
+		if err != nil {
+			failAndPrint(t, err.Error())
+		}
 		validation, err := os.Open("validations/" + testPath[6:])
 		defer func() {
 			if closeErr := validation.Close(); closeErr != nil && err == nil {

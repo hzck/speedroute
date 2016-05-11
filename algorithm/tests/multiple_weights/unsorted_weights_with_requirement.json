@@ -30,10 +30,10 @@
       "to": "END",
       "weights": [
         {
-          "time": 25
+          "time": "25"
         },
         {
-          "time": 10,
+          "time": "10",
           "requirements": [
             {
               "rewardId": "A"
@@ -47,7 +47,7 @@
       "to": "1",
       "weights": [
         {
-          "time": 10
+          "time": "10"
         }
       ]
     },
@@ -56,10 +56,10 @@
       "to": "END",
       "weights": [
         {
-          "time": 20
+          "time": "20"
         },
         {
-          "time": 10,
+          "time": "10",
           "requirements": [
             {
               "rewardId": "A"

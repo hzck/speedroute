@@ -26,7 +26,7 @@
       "to": "1",
       "weights": [
         {
-          "time": 1
+          "time": "1"
         }
       ]
     },
@@ -35,7 +35,7 @@
       "to": "2",
       "weights": [
         {
-          "time": 1
+          "time": "1"
         }
       ]
     },
@@ -44,7 +44,7 @@
       "to": "3",
       "weights": [
         {
-          "time": 1
+          "time": "1"
         }
       ]
     },
@@ -53,7 +53,7 @@
       "to": "END",
       "weights": [
         {
-          "time": 1
+          "time": "1"
         }
       ]
     },
@@ -62,7 +62,7 @@
       "to": "END",
       "weights": [
         {
-          "time": 10
+          "time": "10"
         }
       ]
     }

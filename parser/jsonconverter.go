@@ -3,7 +3,6 @@ package parser
 
 import (
 	"encoding/json"
-	"fmt"
 	m "github.com/hzck/speedroute/model"
 	"io/ioutil"
 )
@@ -34,7 +33,7 @@ type node struct {
 }
 
 type weight struct {
-	Time         *int        `json:"time"`
+	Time         string      `json:"time"`
 	Requirements []rewardRef `json:"requirements"`
 }
 
@@ -46,19 +45,18 @@ type edge struct {
 
 // CreateGraphFromFile takes a path as a parameter and creates rewards, nodes and edges before
 // returning a pointer to a graph.
-func CreateGraphFromFile(path string) *m.Graph { //throw error
+func CreateGraphFromFile(path string) (*m.Graph, error) {
 	file, err := ioutil.ReadFile(path)
 	if err != nil {
-		fmt.Println("got error: " + path)
-		//add error handling here
+		return nil, err
 	}
+
 	var g graph
 	err = json.Unmarshal(file, &g)
-
 	if err != nil {
-		fmt.Println("got error: ", err)
-		//add error handling here
+		return nil, err
 	}
+
 	rewards := make(map[string]*m.Reward)
 	//ugly loop to make sure to handle different ordered rewards
 	for rewardAdded := true; rewardAdded == true; {
@@ -70,6 +68,7 @@ func CreateGraphFromFile(path string) *m.Graph { //throw error
 			}
 		}
 	}
+
 	nodes := make(map[string]*m.Node)
 	for _, n := range g.Nodes {
 		node := m.CreateNode(n.ID, n.Revisitable)
@@ -78,17 +77,22 @@ func CreateGraphFromFile(path string) *m.Graph { //throw error
 		}
 		nodes[node.ID()] = node
 	}
+
 	for _, e := range g.Edges {
 		edge := m.CreateEdge(nodes[e.From], nodes[e.To])
 		for _, w := range e.Weights {
-			weight := m.CreateWeight(getPointerValueOrOne(w.Time))
+			time, err := parseTime(w.Time)
+			if err != nil {
+				return nil, err
+			}
+			weight := m.CreateWeight(time)
 			for _, rewardRef := range w.Requirements {
 				weight.AddRequirement(rewards[rewardRef.RewardID], getPointerValueOrOne(rewardRef.Quantity)) //duplicate code
 			}
 			edge.AddWeight(weight)
 		}
 	}
-	return m.CreateGraph(nodes[g.StartID], nodes[g.EndID])
+	return m.CreateGraph(nodes[g.StartID], nodes[g.EndID]), nil
 }
 
 func getPointerValueOrOne(ptr *int) int {

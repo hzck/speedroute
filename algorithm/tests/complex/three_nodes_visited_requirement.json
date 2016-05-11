@@ -76,7 +76,7 @@
       "to": "1",
       "weights": [
         {
-          "time": 1
+          "time": "1"
         }
       ]
     },
@@ -85,7 +85,7 @@
       "to": "START",
       "weights": [
         {
-          "time": 1
+          "time": "1"
         }
       ]
     },
@@ -94,7 +94,7 @@
       "to": "2",
       "weights": [
         {
-          "time": 2
+          "time": "2"
         }
       ]
     },
@@ -103,7 +103,7 @@
       "to": "START",
       "weights": [
         {
-          "time": 2
+          "time": "2"
         }
       ]
     },
@@ -112,7 +112,7 @@
       "to": "3",
       "weights": [
         {
-          "time": 3
+          "time": "3"
         }
       ]
     },
@@ -121,7 +121,7 @@
       "to": "START",
       "weights": [
         {
-          "time": 3
+          "time": "3"
         }
       ]
     },
@@ -130,7 +130,7 @@
       "to": "3",
       "weights": [
         {
-          "time": 4
+          "time": "4"
         }
       ]
     },
@@ -139,7 +139,7 @@
       "to": "2",
       "weights": [
         {
-          "time": 4
+          "time": "4"
         }
       ]
     },
@@ -148,7 +148,7 @@
       "to": "1",
       "weights": [
         {
-          "time": 5
+          "time": "5"
         }
       ]
     },
@@ -157,7 +157,7 @@
       "to": "2",
       "weights": [
         {
-          "time": 5
+          "time": "5"
         }
       ]
     },
@@ -166,7 +166,7 @@
       "to": "1",
       "weights": [
         {
-          "time": 6
+          "time": "6"
         }
       ]
     },
@@ -175,7 +175,7 @@
       "to": "4",
       "weights": [
         {
-          "time": 6,
+          "time": "6",
           "requirements": [
             {
               "rewardId": "NODES_VISITED_COUNT",
@@ -190,7 +190,7 @@
       "to": "1",
       "weights": [
         {
-          "time": 7
+          "time": "7"
         }
       ]
     },
@@ -199,7 +199,7 @@
       "to": "5",
       "weights": [
         {
-          "time": 7
+          "time": "7"
         }
       ]
     },
@@ -208,7 +208,7 @@
       "to": "2",
       "weights": [
         {
-          "time": 8
+          "time": "8"
         }
       ]
     },
@@ -217,7 +217,7 @@
       "to": "4",
       "weights": [
         {
-          "time": 8,
+          "time": "8",
           "requirements": [
             {
               "rewardId": "NODES_VISITED_COUNT",
@@ -232,7 +232,7 @@
       "to": "2",
       "weights": [
         {
-          "time": 9
+          "time": "9"
         }
       ]
     },
@@ -241,7 +241,7 @@
       "to": "5",
       "weights": [
         {
-          "time": 9
+          "time": "9"
         }
       ]
     },
@@ -250,7 +250,7 @@
       "to": "2",
       "weights": [
         {
-          "time": 10
+          "time": "10"
         }
       ]
     },
@@ -259,7 +259,7 @@
       "to": "6",
       "weights": [
         {
-          "time": 10
+          "time": "10"
         }
       ]
     },
@@ -268,7 +268,7 @@
       "to": "3",
       "weights": [
         {
-          "time": 11
+          "time": "11"
         }
       ]
     },
@@ -277,7 +277,7 @@
       "to": "5",
       "weights": [
         {
-          "time": 11
+          "time": "11"
         }
       ]
     },
@@ -286,7 +286,7 @@
       "to": "3",
       "weights": [
         {
-          "time": 12
+          "time": "12"
         }
       ]
     },
@@ -295,7 +295,7 @@
       "to": "6",
       "weights": [
         {
-          "time": 12
+          "time": "12"
         }
       ]
     },
@@ -304,7 +304,7 @@
       "to": "5",
       "weights": [
         {
-          "time": 13
+          "time": "13"
         }
       ]
     },
@@ -313,7 +313,7 @@
       "to": "6",
       "weights": [
         {
-          "time": 13
+          "time": "13"
         }
       ]
     },
@@ -322,7 +322,7 @@
       "to": "5",
       "weights": [
         {
-          "time": 14
+          "time": "14"
         }
       ]
     },
@@ -331,7 +331,7 @@
       "to": "4",
       "weights": [
         {
-          "time": 14,
+          "time": "14",
           "requirements": [
             {
               "rewardId": "NODES_VISITED_COUNT",
@@ -346,7 +346,7 @@
       "to": "6",
       "weights": [
         {
-          "time": 15
+          "time": "15"
         }
       ]
     },
@@ -355,7 +355,7 @@
       "to": "END",
       "weights": [
         {
-          "time": 15,
+          "time": "15",
           "requirements": [
             {
               "rewardId": "REQUIRED_NODE"
@@ -369,7 +369,7 @@
       "to": "5",
       "weights": [
         {
-          "time": 16
+          "time": "16"
         }
       ]
     },
@@ -378,7 +378,7 @@
       "to": "END",
       "weights": [
         {
-          "time": 16,
+          "time": "16",
           "requirements": [
             {
               "rewardId": "REQUIRED_NODE"
@@ -392,7 +392,7 @@
       "to": "4",
       "weights": [
         {
-          "time": 17,
+          "time": "17",
           "requirements": [
             {
               "rewardId": "NODES_VISITED_COUNT",
@@ -407,7 +407,7 @@
       "to": "END",
       "weights": [
         {
-          "time": 17,
+          "time": "17",
           "requirements": [
             {
               "rewardId": "REQUIRED_NODE"
