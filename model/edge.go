@@ -22,7 +22,7 @@ func (edge *Edge) To() *Node {
 // Weights returns a list of the edge's weights or a default weight if no weights are set.
 func (edge *Edge) Weights() []*Weight {
 	if len(edge.weights) == 0 {
-		return []*Weight{CreateWeight(1)}
+		return []*Weight{CreateWeight(0)}
 	}
 	return edge.weights
 }
@@ -43,10 +43,10 @@ func CreateEdge(from, to *Node) *Edge {
 	return edge
 }
 
-// FastestTime returns the fastest possible time this edge's weighs can provide.
+// FastestTime returns the fastest possible time this edge's weights can provide.
 func (edge *Edge) FastestTime() int {
 	if len(edge.weights) == 0 {
-		return 1
+		return 0
 	}
 	return edge.weights[0].Time()
 }

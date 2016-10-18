@@ -1,0 +1,51 @@
+{
+  "name": "Two edges zero weight",
+  "description": "Edges with zero (0) weight time should work as usual.",
+  "testing": "No weight means time = 0.",
+  "visual": "START->END(2ms), START->1, 1->2, 2->END",
+  "nodes": [
+    {
+      "id": "START"
+    },
+    {
+      "id": "END"
+    },
+    {
+      "id": "1"
+    },
+    {
+      "id": "2"
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "END",
+      "weights": [
+        {
+          "time": "2"
+        }
+      ]
+    },
+    {
+      "from": "START",
+      "to": "1",
+      "weights": [
+        {
+          "time": "0"
+        }
+      ]
+    },
+    {
+      "from": "1",
+      "to": "END",
+      "weights": [
+        {
+          "time": "0"
+        }
+      ]
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

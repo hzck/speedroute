@@ -67,6 +67,9 @@ func (path *Path) Copy() *Path {
 
 // PossibleRoute checks if an edge makes an eligible route to take for the current path.
 func (path *Path) PossibleRoute(edge *Edge) (bool, int) {
+	if edge.From() == edge.To() && !edge.To().Revisitable() {
+		return false, -1
+	}
 	if path.visitable(edge.To()) {
 		return path.requirementsMet(edge)
 	}

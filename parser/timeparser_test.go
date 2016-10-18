@@ -10,6 +10,8 @@ func TestParseTime(t *testing.T) {
 		in  string
 		out int
 	}{
+		{"", 0},                  //0 value
+		{"0", 0},                 //0 value
 		{"55", 55},               //ms
 		{"555", 555},             //ms
 		{"5555", 5555},           //ms

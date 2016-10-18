@@ -1,27 +1,20 @@
-body, html {
+body, html, uib-tabset, uib-tab {
     height: 100%;
 }
 div {
     /*border-style: solid;
     border-width: 1px;*/
 }
+/*
 .header {
     height: 20%
-}
-.main {
-    height: 80%;
-}
-.tab-area {
- 	height: calc(100%-100px);
+}*/
+.container-fluid, .tab-content, .main, .tab-pane, .tab-area{
+  height: 100%;
 }
 .network {
     background-color: #AFAFAF;
-}
-.inline-paragraph{
-    display: inline;
-}
-.inline-div{
-    display: inline;
+    height: 100%
 }
 /*.highlight-grouped-reward {	
   	background: lightblue;

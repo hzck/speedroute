@@ -1,4 +1,4 @@
-var app = angular.module('speedrunRouting', ['ngVis', 'ui.bootstrap']);
+var app = angular.module('speedrunRouting', ['ngVis', 'ngAnimate', 'ui.bootstrap']);
 
 app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
 
@@ -16,9 +16,9 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     g.endNode = "";
     g.shortestPath = [];
 
-    var rewardBeingEdited = undefined;
-    var nodeBeingEdited = undefined;
-    var edgeBeingEdited = undefined;
+    g.rewardBeingEdited = undefined;
+    g.nodeBeingEdited = undefined;
+    g.edgeBeingEdited = undefined;
 
     /* vis network data start */
     var networkNodes = new VisDataSet();
@@ -28,56 +28,56 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
         edges: networkEdges
     };
     g.options = {
-        //autoResize: true
+        //autoResize: true,
         height: '100%'
     };
     g.events = {};
     /* vis network data end */
 
     g.resetReward = function() {
-        rewardBeingEdited = undefined;
+        g.rewardBeingEdited = undefined;
         g.reward = {
-            edit: false,
+            edit: true,
             id: "",
-            unique: false
+            unique: false,
+            error: ""
         }
     };
 
     resetRewardRef = function(obj) {
         obj.rewardRef = {
-            edit: false,
             rewardId: "",
             quantity: ""
         }
     };
 
     g.resetNode = function() {
-        nodeBeingEdited = undefined;
+        g.nodeBeingEdited = undefined;
         g.node = {
-            edit: false,
+            edit: true,
             id: "",
             revisitable: false,
-            rewards: []
+            rewards: [],
+            error: ""
         }
         resetRewardRef(g.node);
     };
 
     resetEdgeWeight = function() {
         g.edge.weight = {
-            edit: false,
-            time: "",
-            requirements: []
+            description: ""
         }
         resetRewardRef(g.edge.weight);
     };
 
     g.resetEdge = function() {
-        edgeBeingEdited = undefined;
+        g.edgeBeingEdited = undefined;
         g.edge = {
-            edit: false,
+            edit: true,
             from: "",
             to: "",
-            weights: []
+            weights: [],
+            errors: []
         }
         resetEdgeWeight();
     };
@@ -89,7 +89,7 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
             }
         }
         return false;
-    }
+    };
 
     contains = function(list, id) {
         for(var i = 0; i < list.length; i++) {
@@ -114,9 +114,9 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
         if(index > -1) {
             list.splice(index, 1);
         }
-    }
+    };
 
-    canRewardBeRemoved = function(id) {
+    g.canRewardBeRemoved = function(id) {
         for(var i = 0; i < g.edges.length; i++) {
             var edge = g.edges[i];
             for(var j = 0; j < edge.weights.length; j++) {
@@ -137,16 +137,16 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
             }
         }
         return true;
-    }
+    };
 
-    canNodeBeRemoved = function(id) {
+    g.canNodeBeRemoved = function(id) {
         for(var i = 0; i < g.edges.length; i++) {
             if(g.edges[i].from === id || g.edges[i].to === id) {
                 return false;
             }
         }
         return true;
-    }
+    };
 
     toggleEdit = function(reward, node, edge) {
         g.reward.edit = reward;
@@ -231,20 +231,20 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     g.addReward = function() {
         var id = g.reward.id;
         if(id) {
-            if(rewardBeingEdited) {
+            if(g.rewardBeingEdited) {
                 log("EDIT MODE");
-                var oldId = rewardBeingEdited.id;
+                var oldId = g.rewardBeingEdited.id;
                 var isNewIdOk = oldId !== id && !contains(g.rewards, id);
                 if(oldId === id || isNewIdOk) {
-                    rewardBeingEdited.unique = g.reward.unique;
+                    g.rewardBeingEdited.unique = g.reward.unique;
                     if(isNewIdOk) {
-                        rewardBeingEdited.id = id;
+                        g.rewardBeingEdited.id = id;
                         updateNodeRewardReferences(oldId, id);
                         updateEdgeRequirementReferences(oldId, id);
                     }
                     g.resetReward();
                 } else {
-                    log("failed to update reward");
+                    g.reward.error = "The updated reward name already exists.";
                 }
             } else {
                 log("ADD MODE");
@@ -255,12 +255,24 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
                     });
                     g.resetReward();
                 } else {
-                    log("failed to add reward");
+                    g.reward.error = "The reward name already exists.";
                 }
             }
         } else {
-            log("g.reward.id is not set");
+            g.reward.error = "The reward name is not set.";
         }
+    };
+
+    g.removeNodeReward = function(index) {
+        g.node.rewards.splice(index, 1);
+    };
+
+    g.removeEdgeWeight = function(index) {
+        g.edge.weights.splice(index, 1);
+    };
+
+    g.removeEdgeWeightRequirement = function(wIndex, index) {
+        g.edge.weights[wIndex].requirements.splice(index, 1);
     };
 
     g.addNodeReward = function() {
@@ -271,83 +283,140 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
                 quantity: (parseInt(g.node.rewardRef.quantity) || 1)//check if this can be removed if not set
             });
             resetRewardRef(g.node);
-        }
-    }
-
-    g.addNode = function() {
-        var id = g.node.id;
-        if(id && !g.node.rewardRef.edit) {
-            if(nodeBeingEdited) {
-                log("EDIT MODE");
-                var oldId = nodeBeingEdited.id;
-                var isNewIdOk = oldId !== id && !contains(g.nodes, id);
-                if(oldId === id || isNewIdOk) {
-                    nodeBeingEdited.revisitable = g.node.revisitable;
-                    nodeBeingEdited.rewards = g.node.rewards;
-                    if(isNewIdOk) {
-                        log("newId ok");
-                        nodeBeingEdited.id = id;
-                        updateEdgeNodesReferences(oldId, id);
-                        networkNodes.update({
-                            id: g.nodes.indexOf(nodeBeingEdited),
-                            label: id,
-                            color: 'lightblue'
-                        });
-                    }
-                    g.resetNode();
-                } else {
-                    log("failed to update node");
-                }
-            } else {
-                log("ADD MODE");
-                if (!contains(g.nodes, id)) {
-                    g.nodes.push({
-                        id: id,
-                        revisitable: g.node.revisitable,
-                        rewards: g.node.rewards
-                    });
-                    networkNodes.add({
-                        id: g.nodes.length-1,
-                        label: id,
-                        color: 'lightblue'
-                    });
-                    g.resetNode();
-                } else {
-                    log("failed to add node");
-                }
-            }
         } else {
-            log("g.node.id is not set or node.rewards are being edited");
+            log("Error, containsReward or contains something something")
         }
     };
 
-    g.addEdgeRequirement = function() {
+    g.addEdgeWeightRequirement = function(wIndex) {
         var id = g.edge.weight.rewardRef.rewardId;
-        if(id && !containsReward(g.edge.weight.requirements, id) && contains(g.rewards, id)) {
-            g.edge.weight.requirements.push({
+        if(id && !containsReward(g.edge.weights[wIndex].requirements, id) && contains(g.rewards, id)) {
+            g.edge.weights[wIndex].requirements.push({
                 rewardId: id,
                 quantity: (parseInt(g.edge.weight.rewardRef.quantity) || 1)//check if this can be removed if not set
             });
             resetRewardRef(g.edge.weight);
+        } else {
+            log("Error, containsReward or contains something something")
         }
-    }
+    };
 
     g.addEdgeWeight = function() {
         var weight = g.edge.weight;
-        if(!weight.rewardRef.edit) {
-            g.edge.weights.push({
-                requirements: weight.requirements,
-                time: (parseInt(weight.time) || 1)//check if this can be removed if not set
-            });
-            resetEdgeWeight();
+        g.edge.weights.push({
+            requirements: [],
+            description: weight.description,
+            time: ""
+        });
+        resetEdgeWeight();
+    };
+
+    g.addNode = function() {
+        var id = g.node.id;
+        if(!id) {
+            g.node.error = "The node name cannot be empty.";
+            return;
+        }
+        if(g.nodeBeingEdited) {
+            log("EDIT MODE");
+            var oldId = g.nodeBeingEdited.id;
+            var isNewIdOk = oldId !== id && !contains(g.nodes, id);
+            if(oldId === id || isNewIdOk) {
+                g.nodeBeingEdited.revisitable = g.node.revisitable;
+                g.nodeBeingEdited.rewards = g.node.rewards;
+                if(isNewIdOk) {
+                    log("newId ok");
+                    g.nodeBeingEdited.id = id;
+                    updateEdgeNodesReferences(oldId, id);
+                    networkNodes.update({
+                        id: g.nodes.indexOf(g.nodeBeingEdited),
+                        label: id,
+                        color: 'lightblue'
+                    });
+                }
+                g.resetNode();
+            } else {
+                g.node.error = "The updated node name already exists.";
+            }
+        } else {
+            log("ADD MODE");
+            if (!contains(g.nodes, id)) {
+                g.nodes.push({
+                    id: id,
+                    revisitable: g.node.revisitable,
+                    rewards: g.node.rewards
+                });
+                networkNodes.add({
+                    id: g.nodes.length-1,
+                    label: id,
+                    color: 'lightblue'
+                });
+                g.resetNode();
+            } else {
+                g.node.error = "The node name already exists.";
+            }
         }
     };
 
     g.addEdge = function() {
+        var error = false;
         var from = g.edge.from;
         var to = g.edge.to;
-        if (from && to && contains(g.nodes, from) && contains(g.nodes, to)
-                && !containsEdge(g.edges, from, to) && !g.edge.weight.edit) {
+
+        if(!from) {
+            g.edge.errors.push("From node cannot be empty.");
+            error = true;
+        }
+        if(!to) {
+            g.edge.errors.push("To node cannot be empty.");
+            error = true;
+        }
+        if(!contains(g.nodes, from)) {
+            g.edge.errors.push("From node " + from + " doesn't exist.");
+            error = true;
+        }
+        if(!contains(g.nodes, to)) {
+            g.edge.errors.push("To node " + to + " doesn't exist.");
+            error = true;
+        }
+
+        if(g.edgeBeingEdited) {
+            log("EDIT MODE");
+            var oldFrom = g.edgeBeingEdited.from;
+            var oldTo = g.edgeBeingEdited.to;
+            var hasChanged = (oldFrom !== from) || (oldTo !== to);
+
+            if(hasChanged && containsEdge(g.edges, from, to)) {
+                g.edge.errors.push("The edge from " + from + " to " + to + "already exists.");
+                error = true;
+            }
+            if(error) {
+                return;
+            }
+
+            g.edgeBeingEdited.weights = g.edge.weights;
+            if(hasChanged) {
+                g.edgeBeingEdited.from = from;
+                g.edgeBeingEdited.to = to;
+                networkEdges.update({
+                    id: g.edges.indexOf(g.edgeBeingEdited),
+                    from: getNodeIndex(g.edgeBeingEdited.from),
+                    to: getNodeIndex(g.edgeBeingEdited.to),
+                    arrows: 'to',
+                    color: 'lightblue'
+                });
+            }
+            g.resetEdge();
+        } else {
+            log("ADD MODE");
+            if(containsEdge(g.edges, from, to)) {
+                g.edge.errors.push("The edge from " + from + " to " + to + "already exists.");
+                error = true;
+            }
+            if(error) {
+                return;
+            }
+
             var edge = {
                 from: from,
                 to: to,
@@ -377,15 +446,13 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     };
 
     g.removeReward = function(reward) {
-        if(canRewardBeRemoved(reward.id)) {
+        if(g.canRewardBeRemoved(reward.id)) {
             removeObj(g.rewards, reward);
-        } else {
-            log("Nonono");
         }
     };
 
     g.removeNode = function(node) {
-        if(canNodeBeRemoved(node.id)) {
+        if(g.canNodeBeRemoved(node.id)) {
             networkNodes.remove({
                 id: g.nodes.indexOf(node)
             });
@@ -405,7 +472,7 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     g.editReward = function(reward) {
         g.resetReward();
         toggleEdit(true, false, false);
-        rewardBeingEdited = reward;
+        g.rewardBeingEdited = reward;
         g.reward.id = reward.id;
         g.reward.unique = reward.unique;
     };
@@ -413,7 +480,7 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     g.editNode = function(node) {
         g.resetNode();
         toggleEdit(false, true, false);
-        nodeBeingEdited = node;
+        g.nodeBeingEdited = node;
         g.node.id = node.id;
         g.node.revisitable = node.revisitable;
         g.node.rewards = angular.copy(node.rewards);
@@ -422,7 +489,7 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     g.editEdge = function(edge) {
         g.resetEdge();
         toggleEdit(false, false, true);
-        edgeBeingEdited = edge;
+        g.edgeBeingEdited = edge;
         g.edge.from = edge.from;
         g.edge.to = edge.to;
         g.edge.weights = angular.copy(edge.weights);
@@ -540,10 +607,13 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
         var results = regex.exec(url);
         if (!results || !results[2]) {
             log("Couldn't find key");
-            return
+            return;
         }
         g.name = decodeURIComponent(results[2].replace(/\+/g, " "));
-        loadGraph()
+        loadGraph();
+        g.reward.edit = false;
+        g.node.edit = false;
+        g.edge.edit = false;
     }
 
     g.resetReward();
