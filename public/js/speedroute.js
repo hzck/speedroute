@@ -5,9 +5,9 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     var g = this;
 
     //create page
-    g.name
-    g.password
-    g.livesplit
+    g.name = "";
+    g.password = "";
+    g.livesplit = "";
 
     g.rewards = [];
     g.nodes = []
@@ -40,7 +40,8 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
             edit: true,
             id: "",
             unique: false,
-            error: ""
+            isA: "",
+            errors: []
         }
     };
 
@@ -229,37 +230,55 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     };
 
     g.addReward = function() {
+        g.reward.errors = [];
+        var error = false;
         var id = g.reward.id;
-        if(id) {
-            if(g.rewardBeingEdited) {
-                log("EDIT MODE");
-                var oldId = g.rewardBeingEdited.id;
-                var isNewIdOk = oldId !== id && !contains(g.rewards, id);
-                if(oldId === id || isNewIdOk) {
-                    g.rewardBeingEdited.unique = g.reward.unique;
-                    if(isNewIdOk) {
-                        g.rewardBeingEdited.id = id;
-                        updateNodeRewardReferences(oldId, id);
-                        updateEdgeRequirementReferences(oldId, id);
-                    }
-                    g.resetReward();
-                } else {
-                    g.reward.error = "The updated reward name already exists.";
-                }
-            } else {
-                log("ADD MODE");
-                if(!contains(g.rewards, id)) {
-                    g.rewards.push({
-                        id: id,
-                        unique: g.reward.unique
-                    });
-                    g.resetReward();
-                } else {
-                    g.reward.error = "The reward name already exists.";
-                }
+        var isA = g.reward.isA;
+        if(!id) {
+            g.reward.errors.push("The reward name is not set.");
+            error = true;
+        }
+        if(isA && !contains(g.rewards, isA)){
+            g.reward.errors.push(isA + " is not a valid reward reference.");
+            error = true;
+        }
+
+        if(g.rewardBeingEdited) {
+            log("EDIT MODE");
+            var oldId = g.rewardBeingEdited.id;
+            var hasChanged = oldId !== id;
+            if(hasChanged && contains(g.rewards, id)) {
+                g.reward.errors.push("The updated reward name already exists.");
+                error = true;
             }
+            if(error) {
+                return;
+            }
+
+            g.rewardBeingEdited.unique = g.reward.unique;
+            g.rewardBeingEdited.isA = isA;
+            if(hasChanged) {
+                g.rewardBeingEdited.id = id;
+                updateNodeRewardReferences(oldId, id);
+                updateEdgeRequirementReferences(oldId, id);
+            }
+            g.resetReward();
         } else {
-            g.reward.error = "The reward name is not set.";
+            log("ADD MODE");
+            if(contains(g.rewards, id)){
+                g.reward.errors.push("The reward name already exists.");
+                error = true;
+            }
+            if(error) {
+                return;
+            }
+
+            g.rewards.push({
+                id: id,
+                unique: g.reward.unique,
+                isA: isA
+            });
+            g.resetReward();
         }
     };
 
@@ -359,6 +378,7 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     };
 
     g.addEdge = function() {
+        g.edge.errors = [];
         var error = false;
         var from = g.edge.from;
         var to = g.edge.to;
@@ -387,7 +407,7 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
             var hasChanged = (oldFrom !== from) || (oldTo !== to);
 
             if(hasChanged && containsEdge(g.edges, from, to)) {
-                g.edge.errors.push("The edge from " + from + " to " + to + "already exists.");
+                g.edge.errors.push("The edge from " + from + " to " + to + " already exists.");
                 error = true;
             }
             if(error) {
@@ -475,6 +495,7 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
         g.rewardBeingEdited = reward;
         g.reward.id = reward.id;
         g.reward.unique = reward.unique;
+        g.reward.isA = reward.isA;
     };
 
     g.editNode = function(node) {

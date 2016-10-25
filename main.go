@@ -241,7 +241,7 @@ func saveGraphHandler(fs iFileSystem) http.HandlerFunc {
 		}
 
 		// Potential bottleneck draining memory, making sure only one graph is routed at any moment.
-		// Should add timing in log if it takes > 1s?
+		// Should add timing in log if it takes > 1s? 10s?
 		mutex.Lock()
 		result := a.Route(graph)
 		mutex.Unlock()
