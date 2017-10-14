@@ -59,7 +59,7 @@ func CreateGraphFromFile(path string) (*m.Graph, error) {
 
 	rewards := make(map[string]*m.Reward)
 	//ugly loop to make sure to handle different ordered rewards
-	for rewardAdded := true; rewardAdded == true; {
+	for rewardAdded := true; rewardAdded; {
 		rewardAdded = false
 		for _, r := range g.Rewards {
 			if rewards[r.ID] == nil && (r.IsA == "" || rewards[r.IsA] != nil) {
@@ -105,7 +105,7 @@ func getPointerValueOrOne(ptr *int) int {
 // CreateJSONFromRoutedPath takes an array of edges and creates an array of the included nodes,
 // and marshals it as json data in a byte array.
 func CreateJSONFromRoutedPath(path []*m.Edge) ([]byte, error) {
-	if path == nil || len(path) == 0 {
+	if len(path) == 0 {
 		return json.Marshal(path)
 	}
 	result := make([]string, len(path)+1)

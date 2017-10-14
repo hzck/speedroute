@@ -199,7 +199,6 @@ func getGraphHandler(fs iFileSystem) http.HandlerFunc {
 			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 		}
-		return
 	}
 }
 

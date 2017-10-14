@@ -15,37 +15,56 @@
     <body>
         <div class="container-fluid">
             <div ng-include="'header.html'"></div>
-            <div class="row main" ng-controller="RouteCtrl as g">
+            <div class="main" ng-controller="RouteCtrl as g">
                 <div class="jumbotron">
-                      <h1>Welcome to Speedroute</h1>
-                      <p>You are one click away from routing your favourite game.</p>
-
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <label class="control-label col-sm-2" for="name">Name</label>
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control" id="name" placeholder="Name" ng-model="g.name">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-sm-2" for="password">Code</label>
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control" id="password" placeholder="Code" ng-model="g.password">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-sm-2" for="livesplit">LiveSplit data</label>
-                            <div class="col-sm-3">
-                                <textarea class="form-control" rows="5" id="livesplit" ng-model="g.livesplit"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-3">
-                                <button class="btn btn-default btn-lg" ng-click="g.createGraph()">Create Graph</button>
-                            </div>
-                        </div>
-                    </form>
+                    <h1>Welcome to Speedroute</h1>
+                    <p>You are one click away from routing your favourite game.</p>
                 </div>
+                <form class="form-horizontal" autocomplete="off">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="name">Graph name</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="name" placeholder="Graph name" ng-model="g.name">
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="g.createError === 409">
+                        <div class="alert alert-danger col-sm-offset-2 col-sm-3" role="alert">
+                            <p>Graph name is already in use.</p>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="g.createError === 1">
+                        <div class="alert alert-danger col-sm-offset-2 col-sm-3" role="alert">
+                            <p>Please enter a valid Graph name.</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="password">Code (optional)</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="password" placeholder="Code (optional)" ng-model="g.password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="alert alert-warning col-sm-offset-2 col-sm-3" role="alert">
+                            <p>Note: The Code will not be encrypted and will be stored in clear text. It's just a way to prevent other users from destroying your work.</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="livesplit">LiveSplit data</label>
+                        <div class="col-sm-3">
+                            <textarea class="form-control" rows="5" id="livesplit" ng-model="g.livesplit"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="g.createError === 400">
+                        <div class="alert alert-danger col-sm-offset-2 col-sm-3" role="alert">
+                            <p>The LiveSplit data can't be parsed.</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-3">
+                            <button class="btn btn-default btn-lg" ng-click="g.createGraph()">Create Graph</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </body>

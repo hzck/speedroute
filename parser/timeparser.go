@@ -22,16 +22,13 @@ func parseTime(time string) (int, error) {
 	switch len(times) {
 	case 1:
 		s = times[0]
-		break
 	case 2:
 		m = times[0]
 		s = times[1]
-		break
 	case 3:
 		h = times[0]
 		m = times[1]
 		s = times[2]
-		break
 	default:
 		return -1, errors.New("Can't parse time " + time)
 	}
@@ -78,6 +75,9 @@ func parseInt(time string) (int, error) {
 }
 
 func parseSeconds(time string) (int, error) {
+	if time == "." {
+		return 0, nil
+	}
 	result, err := strconv.ParseFloat(time, 64)
 	if err != nil {
 		return -1, err

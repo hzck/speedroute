@@ -2,13 +2,17 @@ var app = angular.module('speedrunRouting', ['ngVis', 'ngAnimate', 'ui.bootstrap
 
 app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
 
+    var DEBUG = true;
+
     var g = this;
 
     //create page
     g.name = "";
     g.password = "";
     g.livesplit = "";
+    g.createError = 0;
 
+    //route page
     g.rewards = [];
     g.nodes = []
     g.edges = [];
@@ -28,7 +32,6 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
         edges: networkEdges
     };
     g.options = {
-        //autoResize: true,
         height: '100%'
     };
     g.events = {};
@@ -59,7 +62,7 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
             id: "",
             revisitable: false,
             rewards: [],
-            error: ""
+            errors: []
         }
         resetRewardRef(g.node);
     };
@@ -137,6 +140,11 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
                 }
             }
         }
+        for(var i = 0; i < g.rewards.length; i++) {
+            if(g.rewards[i].isA === id) {
+                return false;
+            }
+        }
         return true;
     };
 
@@ -156,7 +164,9 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     };
 
     log = function(msg) {
-        $log.debug(msg);
+        if(DEBUG) {
+            console.log(msg);
+        }
     };
 
     updateNodeRewardReferences = function(oldId, newId) {
@@ -295,16 +305,31 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     };
 
     g.addNodeReward = function() {
+        g.node.errors = [];
+        var error = false;
         var id = g.node.rewardRef.rewardId;
-        if(id && !containsReward(g.node.rewards, id) && contains(g.rewards, id)) {
-            g.node.rewards.push({
-                rewardId: id,
-                quantity: (parseInt(g.node.rewardRef.quantity) || 1)//check if this can be removed if not set
-            });
-            resetRewardRef(g.node);
-        } else {
-            log("Error, containsReward or contains something something")
+
+        if(!id) {
+            g.node.errors.push("The reward name cannot be empty.");
+            error = true;
         }
+        if(id && !contains(g.rewards, id)) {
+            g.node.errors.push(id + " is not a valid reward reference.");
+            error = true;
+        }
+        if(id && containsReward(g.node.rewards, id)) {
+            g.node.errors.push(id + " is already defined in the list.");
+            error = true;
+        }
+        if(error) {
+            return;
+        }
+
+        g.node.rewards.push({
+            rewardId: id,
+            quantity: (parseInt(g.node.rewardRef.quantity) || 1)//check if this can be removed if not set
+        });
+        resetRewardRef(g.node);
     };
 
     g.addEdgeWeightRequirement = function(wIndex) {
@@ -331,49 +356,67 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     };
 
     g.addNode = function() {
+        g.node.errors = [];
+        var error = false;
         var id = g.node.id;
+
         if(!id) {
-            g.node.error = "The node name cannot be empty.";
-            return;
+            g.node.errors.push("The node name cannot be empty.");
+            error = true;
         }
+        if(g.node.rewardRef.rewardId !== ""){
+            g.node.errors.push("There cannot be an unfinished reward.");
+            error = true;
+        }
+
         if(g.nodeBeingEdited) {
             log("EDIT MODE");
             var oldId = g.nodeBeingEdited.id;
             var isNewIdOk = oldId !== id && !contains(g.nodes, id);
-            if(oldId === id || isNewIdOk) {
-                g.nodeBeingEdited.revisitable = g.node.revisitable;
-                g.nodeBeingEdited.rewards = g.node.rewards;
-                if(isNewIdOk) {
-                    log("newId ok");
-                    g.nodeBeingEdited.id = id;
-                    updateEdgeNodesReferences(oldId, id);
-                    networkNodes.update({
-                        id: g.nodes.indexOf(g.nodeBeingEdited),
-                        label: id,
-                        color: 'lightblue'
-                    });
-                }
-                g.resetNode();
-            } else {
-                g.node.error = "The updated node name already exists.";
+
+            if(!(oldId === id || isNewIdOk)) {
+                g.node.errors.push("The updated node name already exists.");
+                error = true;
             }
-        } else {
-            log("ADD MODE");
-            if (!contains(g.nodes, id)) {
-                g.nodes.push({
-                    id: id,
-                    revisitable: g.node.revisitable,
-                    rewards: g.node.rewards
-                });
-                networkNodes.add({
-                    id: g.nodes.length-1,
+            if(error) {
+                return;
+            }
+
+            g.nodeBeingEdited.revisitable = g.node.revisitable;
+            g.nodeBeingEdited.rewards = g.node.rewards;
+            if(isNewIdOk) {
+                log("newId ok");
+                g.nodeBeingEdited.id = id;
+                updateEdgeNodesReferences(oldId, id);
+                networkNodes.update({
+                    id: g.nodes.indexOf(g.nodeBeingEdited),
                     label: id,
                     color: 'lightblue'
                 });
-                g.resetNode();
-            } else {
-                g.node.error = "The node name already exists.";
             }
+            g.resetNode();
+        } else {
+            log("ADD MODE");
+
+            if(contains(g.nodes, id)) {
+                g.node.errors.push("The node name already exists.");
+                error = true;
+            }
+            if(error) {
+                return;
+            }
+
+            g.nodes.push({
+                id: id,
+                revisitable: g.node.revisitable,
+                rewards: g.node.rewards
+            });
+            networkNodes.add({
+                id: g.nodes.length-1,
+                label: id,
+                color: 'lightblue'
+            });
+            g.resetNode();
         }
     };
 
@@ -398,6 +441,18 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
         if(!contains(g.nodes, to)) {
             g.edge.errors.push("To node " + to + " doesn't exist.");
             error = true;
+        }
+        if(g.edge.weight.description) {
+            g.edge.errors.push("There cannot be an unfinished weight.");
+            error = true;
+        }
+        for(var i = 0; i < g.edge.weights.length; i++) {
+            var weight = g.edge.weights[i];
+            log(!/^\d*[:]{0,1}\d*[:]{0,1}\d*[.]{0,1}\d*$/.test(weight.time));
+            if(!/^\d*[:]{0,1}\d*[:]{0,1}\d*[.]{0,1}\d*$/.test(weight.time)) {
+                g.edge.errors.push("The time of the weight " + weight.description + " is not on the correct format.");
+                error = true;
+            }
         }
 
         if(g.edgeBeingEdited) {
@@ -429,8 +484,9 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
             g.resetEdge();
         } else {
             log("ADD MODE");
+
             if(containsEdge(g.edges, from, to)) {
-                g.edge.errors.push("The edge from " + from + " to " + to + "already exists.");
+                g.edge.errors.push("The edge from " + from + " to " + to + " already exists.");
                 error = true;
             }
             if(error) {
@@ -517,14 +573,19 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     };
 
     g.createGraph = function() {
+        g.createError = 0;
+        if(!g.name) {
+            g.createError = 1;
+            return;
+        }
         $http({
             method: 'POST',
             url: '/create/' + g.name + '/' + g.password,
             data: g.livesplit
         }).then(function successCallback(response) {
-            $log.debug("SUCCeSS!");
+            window.location.href = window.location.href + "route.html?g=" + g.name;
         }, function errorCallback(response) {
-            $log.debug("404 I guess...");
+            g.createError = response.status;
         });
     };
 
@@ -575,7 +636,7 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
                 });
             }
         }, function errorCallback(response) {
-            $log.debug("404 I guess...");
+            log("404 I guess...");
         });
     }
 
@@ -617,7 +678,7 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
                 });
             }
         }, function errorCallback(response) {
-            $log.debug("404 I guess...");
+            log("404 I guess...");
         });
     }
 
@@ -640,5 +701,25 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     g.resetReward();
     g.resetNode();
     g.resetEdge();
+    init();
+});
+
+app.controller('ListCtrl', function($http) {
+
+    var l = this;
+
+    l.list = [];
+
+    init = function() {
+        $http({
+            method: 'GET',
+            url: '/graphs'
+        }).then(function successCallback(response) {
+            l.list = response.data;
+        }, function errorCallback(response) {
+            log("404 I guess...");
+        });
+    }
+
     init();
 });
