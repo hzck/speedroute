@@ -15,12 +15,14 @@
 	<body>
 		<div ng-include="'header.html'"></div>
 		<div class="container">
-			<div class="main" ng-controller="ListCtrl as l">
-				<ul>
-					<li ng-repeat="link in l.list">
-						<a ng-href="/route.html?g={{link}}">{{link}}</a>
-					</li>
-				</ul>
+			<div class="col-sm-8">
+				<div class="main" ng-controller="ListCtrl as l">
+					<ul>
+						<li ng-repeat="link in l.list">
+							<a ng-href="/route.html?g={{link}}">{{link}}</a>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</body>
