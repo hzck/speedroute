@@ -1,71 +1,71 @@
 <!DOCTYPE html>
 <html ng-app="speedrunRouting">
-    <head>
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="css/vis.min.css" />
-        <link rel="stylesheet" type="text/css" href="css/speedroute.css" />
-        <script type="text/javascript" src="js/vis.min.js"></script>
-        <script type="text/javascript" src="js/angular.min.js"></script>
-        <script type="text/javascript" src="js/angular-animate.min.js"></script>
-        <script type="text/javascript" src="js/angular-touch.min.js"></script>
-        <script type="text/javascript" src="js/angular-vis.js"></script>
-        <script type="text/javascript" src="js/ui-bootstrap-tpls-2.0.2.min.js"></script>
-        <script type="text/javascript" src="js/speedroute.js"></script>
-    </head>
-    <body>
-        <div class="container-fluid">
-            <div ng-include="'header.html'"></div>
-            <div class="main" ng-controller="RouteCtrl as g">
-                <div class="jumbotron">
-                    <h1>Welcome to Speedroute</h1>
-                    <p>You are one click away from routing your favourite game.</p>
-                </div>
-                <form class="form-horizontal" autocomplete="off">
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="name">Graph name</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" id="name" placeholder="Graph name" ng-model="g.name">
-                        </div>
-                    </div>
-                    <div class="form-group" ng-if="g.createError === 409">
-                        <div class="alert alert-danger col-sm-offset-2 col-sm-3" role="alert">
-                            <p>Graph name is already in use.</p>
-                        </div>
-                    </div>
-                    <div class="form-group" ng-if="g.createError === 1">
-                        <div class="alert alert-danger col-sm-offset-2 col-sm-3" role="alert">
-                            <p>Please enter a valid Graph name.</p>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="password">Code (optional)</label>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" id="password" placeholder="Code (optional)" ng-model="g.password">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="alert alert-warning col-sm-offset-2 col-sm-3" role="alert">
-                            <p>Note: The Code will not be encrypted and will be stored in clear text. It's just a way to prevent other users from destroying your work.</p>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="livesplit">LiveSplit data</label>
-                        <div class="col-sm-3">
-                            <textarea class="form-control" rows="5" id="livesplit" ng-model="g.livesplit"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group" ng-if="g.createError === 400">
-                        <div class="alert alert-danger col-sm-offset-2 col-sm-3" role="alert">
-                            <p>The LiveSplit data can't be parsed.</p>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-3">
-                            <button class="btn btn-default btn-lg" ng-click="g.createGraph()">Create Graph</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </body>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/vis.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/speedroute.css" />
+		<script type="text/javascript" src="js/vis.min.js"></script>
+		<script type="text/javascript" src="js/angular.min.js"></script>
+		<script type="text/javascript" src="js/angular-animate.min.js"></script>
+		<script type="text/javascript" src="js/angular-touch.min.js"></script>
+		<script type="text/javascript" src="js/angular-vis.js"></script>
+		<script type="text/javascript" src="js/ui-bootstrap-tpls-2.0.2.min.js"></script>
+		<script type="text/javascript" src="js/speedroute.js"></script>
+	</head>
+	<body>
+		<div ng-include="'header.html'"></div>
+		<div class="container">
+			<div class="main" ng-controller="CreateCtrl as c">
+				<div class="jumbotron">
+					<h1>Welcome to Speedroute</h1>
+					<p>You are one click away from routing your favourite game.</p>
+				</div>
+				<form class="form-horizontal" autocomplete="off">
+					<div class="form-group">
+						<label class="control-label col-sm-2" for="name">Graph name</label>
+						<div class="col-sm-3">
+							<input type="text" class="form-control" id="name" placeholder="Graph name" ng-model="c.name">
+						</div>
+					</div>
+					<div class="form-group" ng-if="c.createError === 409">
+						<div class="alert alert-danger col-sm-offset-2 col-sm-3" role="alert">
+							<p>Graph name is already in use.</p>
+						</div>
+					</div>
+					<div class="form-group" ng-if="c.createError === 1">
+						<div class="alert alert-danger col-sm-offset-2 col-sm-3" role="alert">
+							<p>Please enter a valid Graph name. Valid characters are letters, numbers, hyphens (-) and underscore (_).</p>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-2" for="password">Code (optional)</label>
+						<div class="col-sm-3">
+							<input type="text" class="form-control" id="password" placeholder="Code (optional)" ng-model="c.password">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="alert alert-warning col-sm-offset-2 col-sm-3" role="alert">
+							<p>Note: The Code will not be encrypted and will be stored in clear text. It's just a way to prevent other users from destroying your work.</p>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-2" for="livesplit">LiveSplit data</label>
+						<div class="col-sm-3">
+							<textarea class="form-control" rows="5" id="livesplit" ng-model="c.livesplit"></textarea>
+						</div>
+					</div>
+					<div class="form-group" ng-if="c.createError === 400">
+						<div class="alert alert-danger col-sm-offset-2 col-sm-3" role="alert">
+							<p>The LiveSplit data can't be parsed.</p>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-3">
+							<button class="btn btn-default btn-lg" ng-click="c.createGraph()">Create Graph</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</body>
 </html>

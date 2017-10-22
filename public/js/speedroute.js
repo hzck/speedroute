@@ -6,13 +6,6 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
 
     var g = this;
 
-    //create page
-    g.name = "";
-    g.password = "";
-    g.livesplit = "";
-    g.createError = 0;
-
-    //route page
     g.rewards = [];
     g.nodes = []
     g.edges = [];
@@ -448,7 +441,6 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
         }
         for(var i = 0; i < g.edge.weights.length; i++) {
             var weight = g.edge.weights[i];
-            log(!/^\d*[:]{0,1}\d*[:]{0,1}\d*[.]{0,1}\d*$/.test(weight.time));
             if(!/^\d*[:]{0,1}\d*[:]{0,1}\d*[.]{0,1}\d*$/.test(weight.time)) {
                 g.edge.errors.push("The time of the weight " + weight.description + " is not on the correct format.");
                 error = true;
@@ -572,23 +564,6 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
         g.edge.weights = angular.copy(edge.weights);
     };
 
-    g.createGraph = function() {
-        g.createError = 0;
-        if(!g.name) {
-            g.createError = 1;
-            return;
-        }
-        $http({
-            method: 'POST',
-            url: '/create/' + g.name + '/' + g.password,
-            data: g.livesplit
-        }).then(function successCallback(response) {
-            window.location.href = window.location.href + "route.html?g=" + g.name;
-        }, function errorCallback(response) {
-            g.createError = response.status;
-        });
-    };
-
     resetColors = function() {
         for(var i = 0; i < networkNodes.length; i++) {
             networkNodes.update({
@@ -702,6 +677,33 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     g.resetNode();
     g.resetEdge();
     init();
+});
+
+app.controller('CreateCtrl', function($http) {
+
+    var c = this;
+
+    c.name = "";
+    c.password = "";
+    c.livesplit = "";
+    c.createError = 0;
+
+    c.createGraph = function() {
+        c.createError = 0;
+        if(!c.name || !/^[A-Za-z0-9-_]*$/.test(c.name)) {
+            c.createError = 1;
+            return;
+        }
+        $http({
+            method: 'POST',
+            url: '/create/' + c.name + '/' + c.password,
+            data: c.livesplit
+        }).then(function successCallback(response) {
+            window.location.href = window.location.href + "route.html?g=" + c.name;
+        }, function errorCallback(response) {
+            c.createError = response.status;
+        });
+    };
 });
 
 app.controller('ListCtrl', function($http) {
