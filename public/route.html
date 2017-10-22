@@ -1,365 +1,365 @@
 <!DOCTYPE html>
 <html ng-app="speedrunRouting">
-    <head>
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="css/vis.min.css" />
-        <link rel="stylesheet" type="text/css" href="css/speedroute.css" />
-        <script type="text/javascript" src="js/vis.min.js"></script>
-        <script type="text/javascript" src="js/angular.min.js"></script>
-        <script type="text/javascript" src="js/angular-animate.min.js"></script>
-        <script type="text/javascript" src="js/angular-touch.min.js"></script>
-        <script type="text/javascript" src="js/angular-vis.js"></script>
-        <script type="text/javascript" src="js/ui-bootstrap-tpls-2.0.2.min.js"></script>
-        <script type="text/javascript" src="js/speedroute.js"></script>
-        <script type="text/javascript">
-            window.onbeforeunload = function() {
-                return true;
-            };
-        </script>
-    </head>
-    <body>
-        <div class="container-fluid">
-            <div ng-include="'header.html'"></div>
-            <div class="row main" ng-controller="RouteCtrl as g">
-                <div class="col-xs-4">
-                    <div class="form-group">
-                        <label class="control-label col-xs-4" for="password">Code</label>
-                        <div class="col-xs-8">
-                            <input type="text" class="form-control" id="password" placeholder="Code" ng-model="g.password">
-                        </div>
-                        <label class="control-label col-xs-4" for="startnode">Start node</label>
-                        <div class="col-xs-8">
-                            <input type="text" class="form-control" id="startnode" ng-model="g.startNode" placeholder="Start node" uib-typeahead="n.id for n in g.nodes | filter:$viewValue | limitTo:5">
-                        </div>
-                        <label class="control-label col-xs-4" for="endnode">End node</label>
-                        <div class="col-xs-8">
-                            <input type="text" class="form-control" id="endnode" ng-model="g.endNode" placeholder="End node" uib-typeahead="n.id for n in g.nodes | filter:$viewValue | limitTo:5">
-                        </div>
-                    </div>
-                    <button class="btn btn-default btn-block btn-lg" ng-click="g.saveGraph()">Save &amp; Calculate Path</button>
-                    <uib-accordion close-others="true">
-                        <div uib-accordion-group heading="Shortest Path">
-                            <ul>
-                                <li ng-repeat="node in g.shortestPath track by $index">{{node}}</li>
-                            </ul>
-                        </div>
-                        <div uib-accordion-group heading="General Info">
-                            General Info
-                        </div>
-                        <!-- Reward control -->
-                        <div uib-accordion-group heading="Reward" is-open="g.reward.edit">
-                            <form class="form-horizontal" autocomplete="off">
-                                <div class="alert alert-info" role="alert" ng-if="g.rewardBeingEdited">
-                                    Editing {{g.rewardBeingEdited.id}}
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-form-label col-xs-2" for="rewardName">Name</label>
-                                    <div class="col-xs-10">
-                                        <input type="text" class="form-control" id="rewardName" ng-model="g.reward.id" placeholder="Reward name">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-xs-2">Unique</label>
-                                    <div class="col-xs-10">
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input type="checkbox" class="form-check-input" ng-model="g.reward.unique">Can only be obtained once in a run.
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-form-label col-xs-2" for="isAReference">Is A</label>
-                                    <div class="col-xs-10">
-                                        <input type="text" class="form-control" id="isAReference" ng-model="g.reward.isA" placeholder="Reward name" uib-typeahead="r.id for r in g.rewards | filter:$viewValue | limitTo:5">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-xs-offset-2 col-xs-5" ng-if="g.rewardBeingEdited">
-                                        <button type="submit" class="btn btn-default" ng-click="g.addReward()">Edit Reward</button>
-                                    </div>
-                                    <div class="col-xs-offset-2 col-xs-5" ng-if="g.rewardBeingEdited==undefined">
-                                        <button type="submit" class="btn btn-default" ng-click="g.addReward()">Add Reward</button>
-                                    </div>
-                                    <div class="col-xs-5">
-                                        <button type="submit" class="btn btn-default pull-right" ng-click="g.resetReward()">Reset Reward</button>
-                                    </div>
-                                </div>
-                                <div class="alert alert-danger" role="alert" ng-if="g.len(g.reward.errors) > 0">
-                                    <p ng-repeat="e in g.reward.errors">{{e}}</p>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Node control -->
-                        <div uib-accordion-group heading="Node" is-open="g.node.edit">
-                            <form class="form-horizontal" autocomplete="off">
-                                <div class="alert alert-info" role="alert" ng-if="g.nodeBeingEdited">
-                                    Editing {{g.nodeBeingEdited.id}}
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-form-label col-xs-2" for="nodeNameInput">Name</label>
-                                    <div class="col-xs-10">
-                                        <input type="text" class="form-control" id="nodeNameInput" ng-model="g.node.id" placeholder="Node name">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-xs-2">Revisitable</label>
-                                    <div class="col-xs-10">
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input type="checkbox" class="form-check-input" ng-model="g.node.revisitable">Can be visited more than once in a run.
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-xs-2">Rewards</label>
-                                    <div class="col-xs-10">
-                                        <div class="input-group" ng-repeat="r in g.node.rewards">
-                                            <input type="number" ng-model="r.quantity" class="form-control" placeholder="Amount" >
-                                            <span class="input-group-addon">*</span>
-                                            <input type="text" ng-model="r.rewardId" class="form-control" placeholder="Reward name" disabled>
-                                            <span class="input-group-btn">
-                                                <button type="button" class="btn btn-default" ng-click="g.removeNodeReward($index)">Remove</button>
-                                            </span>
-                                        </div>
-                                        <div class="input-group">
-                                            <input type="number" ng-model="g.node.rewardRef.quantity" class="form-control" placeholder="Amount" >
-                                            <span class="input-group-addon">*</span>
-                                            <input type="text" ng-model="g.node.rewardRef.rewardId" class="form-control" placeholder="Reward name" uib-typeahead="r.id for r in g.rewards | filter:$viewValue | limitTo:5">
-                                            <span class="input-group-btn">
-                                                <button type="button" class="btn btn-default" ng-click="g.addNodeReward()">Add</button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-xs-offset-2 col-xs-5" ng-if="g.nodeBeingEdited">
-                                        <button type="submit" class="btn btn-default" ng-click="g.addNode()">Edit Node</button>
-                                    </div>
-                                    <div class="col-xs-offset-2 col-xs-5" ng-if="!g.nodeBeingEdited">
-                                        <button type="submit" class="btn btn-default" ng-click="g.addNode()">Add Node</button>
-                                    </div>
-                                    <div class="col-xs-5">
-                                        <button type="submit" class="btn btn-default pull-right" ng-click="g.resetNode()">Reset Node</button>
-                                    </div>
-                                </div>
-                                <div class="alert alert-danger" role="alert" ng-if="g.len(g.node.errors) > 0">
-                                    <p ng-repeat="e in g.node.errors">{{e}}</p>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Edge control -->
-                        <div uib-accordion-group heading="Edge" is-open="g.edge.edit">
-                            <form class="form-horizontal" autocomplete="off">
-                                <div class="alert alert-info" role="alert" ng-if="g.edgeBeingEdited">
-                                    Editing {{g.edgeBeingEdited.from}} to {{g.edgeBeingEdited.to}}
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-form-label col-xs-2" for="edgeFromInput">From</label>
-                                    <div class="col-xs-10">
-                                        <input type="text" class="form-control" id="edgeFromInput" ng-model="g.edge.from" placeholder="Node name" uib-typeahead="n.id for n in g.nodes | filter:$viewValue | limitTo:5">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-form-label col-xs-2" for="edgeToInput">To</label>
-                                    <div class="col-xs-10">
-                                        <input type="text" class="form-control" id="edgeToInput" ng-model="g.edge.to" placeholder="Node name" uib-typeahead="n.id for n in g.nodes | filter:$viewValue | limitTo:5">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-xs-2">Weights</label>
-                                    <div class="col-xs-10">
-                                        <uib-accordion close-others="true" ng-if="g.len(g.edge.weights) > 0">
-                                            <div uib-accordion-group ng-repeat="(wIndex, w) in g.edge.weights">
-                                                <uib-accordion-heading>
-                                                    <button type="button" class="btn btn-default" ng-click="g.removeEdgeWeight(wIndex)">Remove</button>
-                                                    # {{w.description}}
-                                                </uib-accordion-heading>
-                                                <label>Description</label>
-                                                <div>
-                                                    <input type="text" ng-model="w.description" class="form-control" placeholder="Description">
-                                                </div>
-                                                <label>Duration</label>
-                                                <div>
-                                                    <input type="text" ng-model="w.time" class="form-control" placeholder="Time">
-                                                </div>
-                                                <label>Requirements (at least)</label>
-                                                <div class="input-group" ng-repeat="r in w.requirements">
-                                                    <input type="number" ng-model="r.quantity" class="form-control" placeholder="Amount" >
-                                                    <span class="input-group-addon">*</span>
-                                                    <input type="text" ng-model="r.rewardId" class="form-control" placeholder="Reward name" disabled>
-                                                    <span class="input-group-btn">
-                                                        <button type="button" class="btn btn-default" ng-click="g.removeEdgeWeightRequirement(wIndex, $index)">Remove</button>
-                                                    </span>
-                                                </div>
-                                                <div class="input-group">
-                                                    <input type="number" ng-model="g.edge.weight.rewardRef.quantity" class="form-control" placeholder="Amount" >
-                                                    <span class="input-group-addon">*</span>
-                                                    <input type="text" ng-model="g.edge.weight.rewardRef.rewardId" class="form-control" placeholder="Reward name" uib-typeahead="r.id for r in g.rewards | filter:$viewValue | limitTo:5">
-                                                    <span class="input-group-btn">
-                                                        <button type="button" class="btn btn-default" ng-click="g.addEdgeWeightRequirement(wIndex)">Add</button>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </uib-accordion>
-                                        <div class="input-group">
-                                            <input type="text" ng-model="g.edge.weight.description" class="form-control" placeholder="Description">
-                                            <span class="input-group-btn">
-                                                <button type="button" class="btn btn-default" ng-click="g.addEdgeWeight()">Add</button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-xs-offset-2 col-xs-5" ng-if="g.edgeBeingEdited">
-                                        <button type="submit" class="btn btn-default" ng-click="g.addEdge()">Edit Edge</button>
-                                    </div>
-                                    <div class="col-xs-offset-2 col-xs-5" ng-if="!g.edgeBeingEdited">
-                                        <button type="submit" class="btn btn-default" ng-click="g.addEdge()">Add Edge</button>
-                                    </div>
-                                    <div class="col-xs-5">
-                                        <button type="submit" class="btn btn-default pull-right" ng-click="g.resetEdge()">Reset Edge</button>
-                                    </div>
-                                </div>
-                                <div class="alert alert-danger" role="alert" ng-if="g.len(g.edge.errors) > 0">
-                                    <p ng-repeat="e in g.edge.errors track by $index">{{e}}</p>
-                                </div>
-                            </form>
-                        </div>
-                    </uib-accordion>
-                </div>
-                <div class="col-xs-8 tab-area">
-                    <uib-tabset class="tab-area">
-                        <uib-tab heading="Network" active="true">
-                            <div class="network">
-                                <vis-network data="g.network" options="g.options" events="g.events"></vis-network>
-                            </div>
-                        </uib-tab>
-                        <uib-tab heading="Rewards">
-                            <table class="table table-condensed" ng-show="g.rewards.length > 0">
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Unique</th>
-                                    <th>Is A</th>
-                                    <th>Edit</th>
-                                    <th>Remove</th>
-                                </tr>
-                                <tr ng-repeat="r in g.rewards">
-                                    <td>{{ r.id }}</td>
-                                    <td>{{ r.unique }}</td>
-                                    <td>{{ r.isA }}</td>
-                                    <td>
-                                        <button type="submit" class="btn btn-default" ng-click="g.editReward(r)">Edit</button>
-                                    </td>
-                                    <td>
-                                        <button type="submit" class="btn btn-default" ng-click="g.removeReward(r)" ng-show="g.canRewardBeRemoved(r.id)">Remove</button>
-                                    </td>
-                                </tr>
-                            </table>
-                        </uib-tab>
-                        <uib-tab heading="Nodes">
-                            <table class="table table-condensed" ng-show="g.nodes.length > 0">
-                                <thead>
-                                    <tr>
-                                        <th rowspan="2">Id</th>
-                                        <th colspan="2">Rewards</th>
-                                        <th rowspan="2">Revisitable</th>
-                                        <th rowspan="2">Edit</th>
-                                        <th rowspan="2">Remove</th>
-                                    </tr>
-                                    <tr>
-                                        <th>RewardId</th>
-                                        <th>Quantity</th>
-                                    </tr>
-                                </thead>
-                                <tbody ng-repeat="n in g.nodes">
-                                    <tr ng-if="!n.rewards || n.rewards.length == 0">
-                                        <td>{{ n.id }}</td>
-                                        <td colspan="2"></td>
-                                        <td>{{ n.revisitable }}</td>
-                                        <td>
-                                            <button type="submit" class="btn btn-default" ng-click="g.editNode(n)">Edit</button>
-                                        </td>
-                                        <td>
-                                            <button type="submit" class="btn btn-default" ng-click="g.removeNode(n)" ng-show="g.canNodeBeRemoved(n.id)">Remove</button>
-                                        </td>
-                                    </tr>
-                                    <tr ng-if="n.rewards.length > 0" >
-                                        <td rowspan="{{n.rewards.length}}">{{ n.id }}</td>
-                                        <td>{{n.rewards[0].rewardId}}</td>
-                                        <td>{{n.rewards[0].quantity}}</td>
-                                        <td rowspan="{{n.rewards.length}}">{{ n.revisitable }}</td>
-                                        <td rowspan="{{n.rewards.length}}">
-                                            <button type="submit" class="btn btn-default" ng-click="g.editNode(n)">Edit</button>
-                                        </td>
-                                        <td rowspan="{{n.rewards.length}}">
-                                            <button type="submit" class="btn btn-default" ng-click="g.removeNode(n)" ng-show="g.canNodeBeRemoved(n.id)">Remove</button>
-                                        </td>
-                                    </tr>
-                                    <tr ng-if="$index > 0" ng-repeat="r in n.rewards">
-                                        <td>{{r.rewardId}}</td>
-                                        <td>{{r.quantity}}</td>
-                                    </tr>
-                                </tbody>
-                            </table></uib-tab>
-                        <uib-tab heading="Edges">
-                            <table class="table table-condensed" ng-show="g.edges.length > 0">
-                                <thead>
-                                    <tr>
-                                        <th rowspan="3">From</th>
-                                        <th rowspan="3">To</th>
-                                        <th colspan="4">Weights</th>
-                                        <th rowspan="3">Edit</th>
-                                        <th rowspan="3">Remove</th>
-                                    </tr>
-                                    <tr>
-                                        <th rowspan="2">Description</th>
-                                        <th rowspan="2">Time</th>
-                                        <th colspan="2">Requirements</th>
-                                    </tr>
-                                    <tr>
-                                        <th>RewardId</th>
-                                        <th>Quantity</th>
-                                    </tr>
-                                </thead>
-                                <tbody ng-repeat="e in g.edges">
-                                    <tr ng-if="!e.weights || e.weights.length == 0">
-                                        <td>{{ e.from }}</td>
-                                        <td>{{ e.to }}</td>
-                                        <td colspan="4"></td>
-                                        <td>
-                                            <button type="submit" class="btn btn-default" ng-click="g.editEdge(e)">Edit</button>
-                                        </td>
-                                        <td>
-                                            <button type="submit" class="btn btn-default" ng-click="g.removeEdge(e)">Remove</button>
-                                        </td>
-                                    </tr>
-                                    <tr ng-repeat-start="w in e.weights">
-                                        <td rowspan="{{g.edgeRowSpan(e.weights)}}" ng-if="$first">{{ e.from }}</td>
-                                        <td rowspan="{{g.edgeRowSpan(e.weights)}}" ng-if="$first">{{ e.to }}</td>
-                                        <td rowspan="{{g.len(w.requirements) == 0 ? 1 : g.len(w.requirements)}}">{{ w.description }}</td>
-                                        <td rowspan="{{g.len(w.requirements) == 0 ? 1 : g.len(w.requirements)}}">{{ w.time }}</td>
-                                        <td colspan="2" ng-if="g.len(w.requirements) == 0"></td>
-                                        <td ng-if="g.len(w.requirements) > 0">{{ w.requirements[0].rewardId }}</td>
-                                        <td ng-if="g.len(w.requirements) > 0">{{ w.requirements[0].quantity }}</td>
-                                        <td rowspan="{{g.edgeRowSpan(e.weights)}}" ng-if="$first">
-                                            <button type="submit" class="btn btn-default" ng-click="g.editEdge(e)">Edit</button>
-                                        </td>
-                                        <td rowspan="{{g.edgeRowSpan(e.weights)}}" ng-if="$first">
-                                            <button type="submit" class="btn btn-default" ng-click="g.removeEdge(e)">Remove</button>
-                                        </td>
-                                    </tr>
-                                    <tr ng-repeat-end ng-if="!$first" ng-repeat="r in w.requirements">
-                                        <td>{{r.rewardId}}</td>
-                                        <td>{{r.quantity}}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </uib-tab>
-                    </uib-tabset>
-                </div>
-            </div>
-        </div>
-    </body>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/vis.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/speedroute.css" />
+		<script type="text/javascript" src="js/vis.min.js"></script>
+		<script type="text/javascript" src="js/angular.min.js"></script>
+		<script type="text/javascript" src="js/angular-animate.min.js"></script>
+		<script type="text/javascript" src="js/angular-touch.min.js"></script>
+		<script type="text/javascript" src="js/angular-vis.js"></script>
+		<script type="text/javascript" src="js/ui-bootstrap-tpls-2.0.2.min.js"></script>
+		<script type="text/javascript" src="js/speedroute.js"></script>
+		<script type="text/javascript">
+		window.onbeforeunload = function() {
+		return true;
+		};
+		</script>
+	</head>
+	<body>
+		<div ng-include="'header.html'"></div>
+		<div class="container-fluid">
+			<div class="row main" ng-controller="RouteCtrl as g">
+				<div class="col-xs-4">
+					<div class="form-group">
+						<label class="control-label col-xs-4" for="password">Code</label>
+						<div class="col-xs-8">
+							<input type="text" class="form-control" id="password" placeholder="Code" ng-model="g.password">
+						</div>
+						<label class="control-label col-xs-4" for="startnode">Start node</label>
+						<div class="col-xs-8">
+							<input type="text" class="form-control" id="startnode" ng-model="g.startNode" placeholder="Start node" uib-typeahead="n.id for n in g.nodes | filter:$viewValue | limitTo:5">
+						</div>
+						<label class="control-label col-xs-4" for="endnode">End node</label>
+						<div class="col-xs-8">
+							<input type="text" class="form-control" id="endnode" ng-model="g.endNode" placeholder="End node" uib-typeahead="n.id for n in g.nodes | filter:$viewValue | limitTo:5">
+						</div>
+					</div>
+					<button class="btn btn-default btn-block btn-lg" ng-click="g.saveGraph()">Save &amp; Calculate Path</button>
+					<uib-accordion close-others="true">
+					<div uib-accordion-group heading="Shortest Path">
+						<ul>
+							<li ng-repeat="node in g.shortestPath track by $index">{{node}}</li>
+						</ul>
+					</div>
+					<div uib-accordion-group heading="General Info">
+						General Info
+					</div>
+					<!-- Reward control -->
+					<div uib-accordion-group heading="Reward" is-open="g.reward.edit">
+						<form class="form-horizontal" autocomplete="off">
+							<div class="alert alert-info" role="alert" ng-if="g.rewardBeingEdited">
+								Editing {{g.rewardBeingEdited.id}}
+							</div>
+							<div class="form-group row">
+								<label class="col-form-label col-xs-2" for="rewardName">Name</label>
+								<div class="col-xs-10">
+									<input type="text" class="form-control" id="rewardName" ng-model="g.reward.id" placeholder="Reward name">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-xs-2">Unique</label>
+								<div class="col-xs-10">
+									<div class="form-check">
+										<label class="form-check-label">
+											<input type="checkbox" class="form-check-input" ng-model="g.reward.unique">Can only be obtained once in a run.
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-form-label col-xs-2" for="isAReference">Is A</label>
+								<div class="col-xs-10">
+									<input type="text" class="form-control" id="isAReference" ng-model="g.reward.isA" placeholder="Reward name" uib-typeahead="r.id for r in g.rewards | filter:$viewValue | limitTo:5">
+								</div>
+							</div>
+							<div class="form-group row">
+								<div class="col-xs-offset-2 col-xs-5" ng-if="g.rewardBeingEdited">
+									<button type="submit" class="btn btn-default" ng-click="g.addReward()">Edit Reward</button>
+								</div>
+								<div class="col-xs-offset-2 col-xs-5" ng-if="g.rewardBeingEdited==undefined">
+									<button type="submit" class="btn btn-default" ng-click="g.addReward()">Add Reward</button>
+								</div>
+								<div class="col-xs-5">
+									<button type="submit" class="btn btn-default pull-right" ng-click="g.resetReward()">Reset Reward</button>
+								</div>
+							</div>
+							<div class="alert alert-danger" role="alert" ng-if="g.len(g.reward.errors) > 0">
+								<p ng-repeat="e in g.reward.errors">{{e}}</p>
+							</div>
+						</form>
+					</div>
+					<!-- Node control -->
+					<div uib-accordion-group heading="Node" is-open="g.node.edit">
+						<form class="form-horizontal" autocomplete="off">
+							<div class="alert alert-info" role="alert" ng-if="g.nodeBeingEdited">
+								Editing {{g.nodeBeingEdited.id}}
+							</div>
+							<div class="form-group row">
+								<label class="col-form-label col-xs-2" for="nodeNameInput">Name</label>
+								<div class="col-xs-10">
+									<input type="text" class="form-control" id="nodeNameInput" ng-model="g.node.id" placeholder="Node name">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-xs-2">Revisitable</label>
+								<div class="col-xs-10">
+									<div class="form-check">
+										<label class="form-check-label">
+											<input type="checkbox" class="form-check-input" ng-model="g.node.revisitable">Can be visited more than once in a run.
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-xs-2">Rewards</label>
+								<div class="col-xs-10">
+									<div class="input-group" ng-repeat="r in g.node.rewards">
+										<input type="number" ng-model="r.quantity" class="form-control" placeholder="Amount" >
+										<span class="input-group-addon">*</span>
+										<input type="text" ng-model="r.rewardId" class="form-control" placeholder="Reward name" disabled>
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-default" ng-click="g.removeNodeReward($index)">Remove</button>
+										</span>
+									</div>
+									<div class="input-group">
+										<input type="number" ng-model="g.node.rewardRef.quantity" class="form-control" placeholder="Amount" >
+										<span class="input-group-addon">*</span>
+										<input type="text" ng-model="g.node.rewardRef.rewardId" class="form-control" placeholder="Reward name" uib-typeahead="r.id for r in g.rewards | filter:$viewValue | limitTo:5">
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-default" ng-click="g.addNodeReward()">Add</button>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<div class="col-xs-offset-2 col-xs-5" ng-if="g.nodeBeingEdited">
+									<button type="submit" class="btn btn-default" ng-click="g.addNode()">Edit Node</button>
+								</div>
+								<div class="col-xs-offset-2 col-xs-5" ng-if="!g.nodeBeingEdited">
+									<button type="submit" class="btn btn-default" ng-click="g.addNode()">Add Node</button>
+								</div>
+								<div class="col-xs-5">
+									<button type="submit" class="btn btn-default pull-right" ng-click="g.resetNode()">Reset Node</button>
+								</div>
+							</div>
+							<div class="alert alert-danger" role="alert" ng-if="g.len(g.node.errors) > 0">
+								<p ng-repeat="e in g.node.errors">{{e}}</p>
+							</div>
+						</form>
+					</div>
+					<!-- Edge control -->
+					<div uib-accordion-group heading="Edge" is-open="g.edge.edit">
+						<form class="form-horizontal" autocomplete="off">
+							<div class="alert alert-info" role="alert" ng-if="g.edgeBeingEdited">
+								Editing {{g.edgeBeingEdited.from}} to {{g.edgeBeingEdited.to}}
+							</div>
+							<div class="form-group row">
+								<label class="col-form-label col-xs-2" for="edgeFromInput">From</label>
+								<div class="col-xs-10">
+									<input type="text" class="form-control" id="edgeFromInput" ng-model="g.edge.from" placeholder="Node name" uib-typeahead="n.id for n in g.nodes | filter:$viewValue | limitTo:5">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-form-label col-xs-2" for="edgeToInput">To</label>
+								<div class="col-xs-10">
+									<input type="text" class="form-control" id="edgeToInput" ng-model="g.edge.to" placeholder="Node name" uib-typeahead="n.id for n in g.nodes | filter:$viewValue | limitTo:5">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-xs-2">Weights</label>
+								<div class="col-xs-10">
+									<uib-accordion close-others="true" ng-if="g.len(g.edge.weights) > 0">
+									<div uib-accordion-group ng-repeat="(wIndex, w) in g.edge.weights">
+										<uib-accordion-heading>
+										<button type="button" class="btn btn-default" ng-click="g.removeEdgeWeight(wIndex)">Remove</button>
+										# {{w.description}}
+										</uib-accordion-heading>
+										<label>Description</label>
+										<div>
+											<input type="text" ng-model="w.description" class="form-control" placeholder="Description">
+										</div>
+										<label>Duration</label>
+										<div>
+											<input type="text" ng-model="w.time" class="form-control" placeholder="Time">
+										</div>
+										<label>Requirements (at least)</label>
+										<div class="input-group" ng-repeat="r in w.requirements">
+											<input type="number" ng-model="r.quantity" class="form-control" placeholder="Amount" >
+											<span class="input-group-addon">*</span>
+											<input type="text" ng-model="r.rewardId" class="form-control" placeholder="Reward name" disabled>
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-default" ng-click="g.removeEdgeWeightRequirement(wIndex, $index)">Remove</button>
+											</span>
+										</div>
+										<div class="input-group">
+											<input type="number" ng-model="g.edge.weight.rewardRef.quantity" class="form-control" placeholder="Amount" >
+											<span class="input-group-addon">*</span>
+											<input type="text" ng-model="g.edge.weight.rewardRef.rewardId" class="form-control" placeholder="Reward name" uib-typeahead="r.id for r in g.rewards | filter:$viewValue | limitTo:5">
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-default" ng-click="g.addEdgeWeightRequirement(wIndex)">Add</button>
+											</span>
+										</div>
+									</div>
+									</uib-accordion>
+									<div class="input-group">
+										<input type="text" ng-model="g.edge.weight.description" class="form-control" placeholder="Description">
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-default" ng-click="g.addEdgeWeight()">Add</button>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<div class="col-xs-offset-2 col-xs-5" ng-if="g.edgeBeingEdited">
+									<button type="submit" class="btn btn-default" ng-click="g.addEdge()">Edit Edge</button>
+								</div>
+								<div class="col-xs-offset-2 col-xs-5" ng-if="!g.edgeBeingEdited">
+									<button type="submit" class="btn btn-default" ng-click="g.addEdge()">Add Edge</button>
+								</div>
+								<div class="col-xs-5">
+									<button type="submit" class="btn btn-default pull-right" ng-click="g.resetEdge()">Reset Edge</button>
+								</div>
+							</div>
+							<div class="alert alert-danger" role="alert" ng-if="g.len(g.edge.errors) > 0">
+								<p ng-repeat="e in g.edge.errors track by $index">{{e}}</p>
+							</div>
+						</form>
+					</div>
+					</uib-accordion>
+				</div>
+				<div class="col-xs-8 tab-area">
+					<uib-tabset class="tab-area">
+					<uib-tab heading="Network" active="true">
+					<div class="network">
+						<vis-network data="g.network" options="g.options" events="g.events"></vis-network>
+					</div>
+					</uib-tab>
+					<uib-tab heading="Rewards">
+					<table class="table table-condensed" ng-show="g.rewards.length > 0">
+						<tr>
+							<th>Id</th>
+							<th>Unique</th>
+							<th>Is A</th>
+							<th>Edit</th>
+							<th>Remove</th>
+						</tr>
+						<tr ng-repeat="r in g.rewards">
+							<td>{{ r.id }}</td>
+							<td>{{ r.unique }}</td>
+							<td>{{ r.isA }}</td>
+							<td>
+								<button type="submit" class="btn btn-default" ng-click="g.editReward(r)">Edit</button>
+							</td>
+							<td>
+								<button type="submit" class="btn btn-default" ng-click="g.removeReward(r)" ng-show="g.canRewardBeRemoved(r.id)">Remove</button>
+							</td>
+						</tr>
+					</table>
+					</uib-tab>
+					<uib-tab heading="Nodes">
+					<table class="table table-condensed" ng-show="g.nodes.length > 0">
+						<thead>
+							<tr>
+								<th rowspan="2">Id</th>
+								<th colspan="2">Rewards</th>
+								<th rowspan="2">Revisitable</th>
+								<th rowspan="2">Edit</th>
+								<th rowspan="2">Remove</th>
+							</tr>
+							<tr>
+								<th>RewardId</th>
+								<th>Quantity</th>
+							</tr>
+						</thead>
+						<tbody ng-repeat="n in g.nodes">
+							<tr ng-if="!n.rewards || n.rewards.length == 0">
+								<td>{{ n.id }}</td>
+								<td colspan="2"></td>
+								<td>{{ n.revisitable }}</td>
+								<td>
+									<button type="submit" class="btn btn-default" ng-click="g.editNode(n)">Edit</button>
+								</td>
+								<td>
+									<button type="submit" class="btn btn-default" ng-click="g.removeNode(n)" ng-show="g.canNodeBeRemoved(n.id)">Remove</button>
+								</td>
+							</tr>
+							<tr ng-if="n.rewards.length > 0" >
+								<td rowspan="{{n.rewards.length}}">{{ n.id }}</td>
+								<td>{{n.rewards[0].rewardId}}</td>
+								<td>{{n.rewards[0].quantity}}</td>
+								<td rowspan="{{n.rewards.length}}">{{ n.revisitable }}</td>
+								<td rowspan="{{n.rewards.length}}">
+									<button type="submit" class="btn btn-default" ng-click="g.editNode(n)">Edit</button>
+								</td>
+								<td rowspan="{{n.rewards.length}}">
+									<button type="submit" class="btn btn-default" ng-click="g.removeNode(n)" ng-show="g.canNodeBeRemoved(n.id)">Remove</button>
+								</td>
+							</tr>
+							<tr ng-if="$index > 0" ng-repeat="r in n.rewards">
+								<td>{{r.rewardId}}</td>
+								<td>{{r.quantity}}</td>
+							</tr>
+						</tbody>
+					</table></uib-tab>
+					<uib-tab heading="Edges">
+					<table class="table table-condensed" ng-show="g.edges.length > 0">
+						<thead>
+							<tr>
+								<th rowspan="3">From</th>
+								<th rowspan="3">To</th>
+								<th colspan="4">Weights</th>
+								<th rowspan="3">Edit</th>
+								<th rowspan="3">Remove</th>
+							</tr>
+							<tr>
+								<th rowspan="2">Description</th>
+								<th rowspan="2">Time</th>
+								<th colspan="2">Requirements</th>
+							</tr>
+							<tr>
+								<th>RewardId</th>
+								<th>Quantity</th>
+							</tr>
+						</thead>
+						<tbody ng-repeat="e in g.edges">
+							<tr ng-if="!e.weights || e.weights.length == 0">
+								<td>{{ e.from }}</td>
+								<td>{{ e.to }}</td>
+								<td colspan="4"></td>
+								<td>
+									<button type="submit" class="btn btn-default" ng-click="g.editEdge(e)">Edit</button>
+								</td>
+								<td>
+									<button type="submit" class="btn btn-default" ng-click="g.removeEdge(e)">Remove</button>
+								</td>
+							</tr>
+							<tr ng-repeat-start="w in e.weights">
+								<td rowspan="{{g.edgeRowSpan(e.weights)}}" ng-if="$first">{{ e.from }}</td>
+								<td rowspan="{{g.edgeRowSpan(e.weights)}}" ng-if="$first">{{ e.to }}</td>
+								<td rowspan="{{g.len(w.requirements) == 0 ? 1 : g.len(w.requirements)}}">{{ w.description }}</td>
+								<td rowspan="{{g.len(w.requirements) == 0 ? 1 : g.len(w.requirements)}}">{{ w.time }}</td>
+								<td colspan="2" ng-if="g.len(w.requirements) == 0"></td>
+								<td ng-if="g.len(w.requirements) > 0">{{ w.requirements[0].rewardId }}</td>
+								<td ng-if="g.len(w.requirements) > 0">{{ w.requirements[0].quantity }}</td>
+								<td rowspan="{{g.edgeRowSpan(e.weights)}}" ng-if="$first">
+									<button type="submit" class="btn btn-default" ng-click="g.editEdge(e)">Edit</button>
+								</td>
+								<td rowspan="{{g.edgeRowSpan(e.weights)}}" ng-if="$first">
+									<button type="submit" class="btn btn-default" ng-click="g.removeEdge(e)">Remove</button>
+								</td>
+							</tr>
+							<tr ng-repeat-end ng-if="!$first" ng-repeat="r in w.requirements">
+								<td>{{r.rewardId}}</td>
+								<td>{{r.quantity}}</td>
+							</tr>
+						</tbody>
+					</table>
+					</uib-tab>
+					</uib-tabset>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>
