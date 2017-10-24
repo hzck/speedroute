@@ -12,6 +12,7 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 )
 
 var mutex = &sync.Mutex{}
@@ -242,7 +243,9 @@ func saveGraphHandler(fs iFileSystem) http.HandlerFunc {
 		// Potential bottleneck draining memory, making sure only one graph is routed at any moment.
 		// Should add timing in log if it takes > 1s? 10s?
 		mutex.Lock()
+		start := time.Now()
 		result := a.Route(graph)
+		log.Printf("%s taking %s\n", filename, time.Since(start))
 		mutex.Unlock()
 		js, err := p.CreateJSONFromRoutedPath(result)
 		w.Header().Set("Content-Type", "application/json")
