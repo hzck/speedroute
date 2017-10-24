@@ -11,6 +11,7 @@ app.controller('RouteCtrl', function($log, $http, VisDataSet, $location) {
     g.edges = [];
     g.startNode = "";
     g.endNode = "";
+    g.password = "";
     g.shortestPath = [];
 
     g.rewardBeingEdited = undefined;
