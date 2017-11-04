@@ -1,0 +1,62 @@
+{
+  "name": "Revisit node previously visited to get extra reward",
+  "description": "Revisiting a node is possible if it's revisitable, and gaining same reward twice.",
+  "testing": "Revisit is possible to gain same reward twice",
+  "visual": "START->1, 1->2, 2->1, 2->END(req 2A)",
+  "rewards": [
+    {
+      "id": "A"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "START"
+    },
+    {
+      "id": "END"
+    },
+    {
+      "id": "1",
+      "revisitable": true,
+      "rewards": [
+        {
+          "rewardId": "A"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "revisitable": true
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "1"
+    },
+    {
+      "from": "1",
+      "to": "2"
+    },
+    {
+      "from": "2",
+      "to": "1"
+    },
+    {
+      "from": "2",
+      "to": "END",
+      "weights": [
+        {
+          "requirements": [
+            {
+              "rewardId": "A",
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "startId": "START",
+  "endId": "END"
+}

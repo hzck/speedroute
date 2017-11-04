@@ -67,34 +67,78 @@ func (path *Path) Copy() *Path {
 
 // PossibleRoute checks if an edge makes an eligible route to take for the current path.
 func (path *Path) PossibleRoute(edge *Edge) (bool, int) {
-	if edge.From() == edge.To() && !edge.To().Revisitable() {
+
+	if path.rewardsAreNotNegativeOrUnique(edge.To()) {
 		return false, -1
 	}
-	if path.visitable(edge.To()) {
-		return path.requirementsMet(edge)
+
+	nodeVisited := path.hasBeenVisited(edge)
+
+	if !edge.To().Revisitable() && nodeVisited {
+		return false, -1
 	}
-	return false, -1
+
+	rewardsChangedSinceLastVisit := path.rewardsChangedSinceLastVisit(edge)
+
+	if edge.To().Revisitable() && nodeVisited && !rewardsChangedSinceLastVisit {
+		return false, -1
+	}
+
+	return path.requirementsMet(edge)
 }
 
-func (path *Path) visitable(node *Node) bool {
-	for i := len(path.edges) - 1; i >= 0; i-- {
-		if path.edges[i].To() == node {
-			return false
-		}
-		if !node.Revisitable() && path.edges[i].From() == node {
-			return false
-		}
-		if node.Revisitable() && len(path.edges[i].To().Rewards()) > 0 {
+func (path *Path) hasBeenVisited(edge *Edge) bool {
+	node := edge.To()
+	for i := 0; i < len(path.edges); i++ {
+		if path.edges[i].From() == node {
 			return true
 		}
 	}
+	return edge.From() == node
+}
+
+func (path *Path) rewardsChangedSinceLastVisit(edge *Edge) bool {
+	rewards := make(map[*Reward]int)
+	node := edge.To()
+
+	for k, v := range edge.From().Rewards() {
+		rewards[k] = rewards[k] + v
+	}
+
+	if edge.From() == edge.To() {
+		return checkRewardsNotEmpty(rewards)
+	}
+
+	for i := len(path.edges) - 1; i >= 0; i-- {
+		for k, v := range path.edges[i].From().Rewards() {
+			rewards[k] = rewards[k] + v
+		}
+		if path.edges[i].From() == node {
+			break
+		}
+	}
+
+	return checkRewardsNotEmpty(rewards)
+}
+
+func checkRewardsNotEmpty(rewards map[*Reward]int) bool {
+	for _, v := range rewards {
+		if v != 0 {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (path *Path) rewardsAreNotNegativeOrUnique(node *Node) bool {
 	for reward, quantity := range node.Rewards() {
 		rewardCount := path.Rewards()[reward]
 		if rewardCount+quantity < 0 || (reward.Unique() && rewardCount > 0) {
-			return false
+			return true
 		}
 	}
-	return true
+	return false
 }
 
 func (path *Path) requirementsMet(edge *Edge) (bool, int) {
