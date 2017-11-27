@@ -17,6 +17,50 @@
 		<div class="container">
 			<div class="col-sm-8">
 				<h2>User guide</h2>
+				<p>This section should highlight how to use <a href="/">Speedroute</a> as a tool, and what the expected result will be. It will be divided into 3 subsections: Rewards, Nodes and Edges. These are the bulk of the algorithm, and there will be examples to explain each part.</p>
+				<h3>Rewards</h3>
+				<p>A reward can be any obtainable item, a story milestone, an upgrade or a requirement for later parts of the game. Rewards will be rewarded/obtained during the run, and can be used as requirements to reach certain nodes. Rewards can also be a subtype: a sword is a melee weapon is a weapon and a bow is a ranged weapon is a weapon - some edges might require a melee weapon and then the bow won't do, but if any weapon is required then both sword or bow will do.</p>
+				<uib-accordion close-others="true">
+				<div uib-accordion-group heading="Example rewards in Super Mario 64">
+					<ul>
+						<li>Star</li>
+						<li>8 red coins star from Cool Cool Mountain (CCM) (which is also a star)</li>
+						<li>Wing cap</li>
+						<li>Bob-Omb Battlefield (BOB) Cannon open</li>
+						<li>Downstairs key</li>
+						<li>Wing cap</li>
+					</ul>
+				</div>
+				</uib-accordion>
+				<h3>Nodes</h3>
+				<p>A node is usually a place in the game, or a game state. It can be anything from a door, the moment you kill a boss or open a treasure chest. Nodes can include rewards, so when you reach them you get the reward. Some nodes are revisitable and can be visited several times during a run, like a common room or a level select screen, while others can only be visited once. Usually when a node includes rewards it can't be revisited but that might not always be true. Some places might be farmable and give 100 gold each time.</p>
+				<uib-accordion close-others="true">
+				<div uib-accordion-group heading="Example nodes in Super Mario 64">
+					<ul>
+						<li>START</li>
+						<li>BOB star select screen (revisitable)</li>
+						<li>Getting 8 red coins star from CCM (CCM-4 star reward)</li>
+						<li>Save and exit spot in the middle (revisitable)</li>
+						<li>MIPS (MIPS star reward)</li>
+						<li>Big star in the end</li>
+					</ul>
+				</div>
+				<h3>Edges</h3>
+				<p>Edges are where it get's interesting. An edge is a path or a route between two nodes. There can only be one edge from node A to node B (and one from B to A), but it can instead contain sub-edges which are called weights. Each weight represents a different way of taking you from node A to node B, possibly with different reward requirements. A weight is also supposed to have a duration (but this is not always the case). As an example, lets say that the edge is defeating Flash Man in Mega Man 2. If you only have Buster it will take 55sec and if you have Metal Blade it will only take 15sec (numbers made up). If you don't have Metal Blade by then you have to take the slower weight. Note that edges will not deplete your rewards, just having it will make it accessible. </p>
+				<uib-accordion close-others="true">
+				<div uib-accordion-group heading="Example edges in Super Mario 64">
+					<ul>
+						<li>START to BOB star select screen</li>
+						<li>BOB star select screen to BOB-3 star
+							<ul>
+								<li>No items - 34 sec</li>
+								<li>Cannon opened - 27 sec</li>
+								<li>Wing cap unlocked - 15 sec</li>
+							</ul>
+						</li>
+						<li>Save and exit spot to Tick Tock Clock</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</body>
