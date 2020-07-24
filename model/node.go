@@ -17,7 +17,7 @@ func (node *Node) FromEdges() []*Edge {
 	return node.fromEdges
 }
 
-//AddFromEdge adds an edge which has this node as a from edge.
+// AddFromEdge adds an edge which has this node as a from edge.
 func (node *Node) AddFromEdge(edge *Edge) {
 	node.fromEdges = append(node.fromEdges, edge)
 }
@@ -27,7 +27,7 @@ func (node *Node) ToEdges() []*Edge {
 	return node.toEdges
 }
 
-//AddToEdge adds an edge which has this node as a to edge.
+// AddToEdge adds an edge which has this node as a to edge.
 func (node *Node) AddToEdge(edge *Edge) {
 	node.toEdges = append(node.toEdges, edge)
 }
@@ -47,7 +47,7 @@ func (node *Node) AddReward(reward *Reward, quantity int) {
 	node.rewards[reward] = quantity
 }
 
-//MinPathLeft returns minimum path left to end node or math.MaxInt32 if not known.
+// MinPathLeft returns minimum path left to end node or math.MaxInt32 if not known.
 func (node *Node) MinPathLeft() int {
 	return node.minPathLeft
 }
@@ -62,7 +62,7 @@ func (node *Node) Revisitable() bool {
 	return node.revisitable
 }
 
-//CreateNode takes id and revisitable as paramteres, returning a pointer to the new node
+// CreateNode takes id and revisitable as paramteres, returning a pointer to the new node
 func CreateNode(id string, revisit bool) *Node {
 	node := new(Node)
 	node.id = id

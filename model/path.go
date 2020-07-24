@@ -29,7 +29,7 @@ func (path *Path) Rewards() map[*Reward]int {
 	return path.rewards
 }
 
-//AddRewards adds a map of rewards to the path.
+// AddRewards adds a map of rewards to the path.
 func (path *Path) AddRewards(rewards map[*Reward]int) {
 	for key, value := range rewards {
 		path.rewards[key] += value
@@ -66,8 +66,7 @@ func (path *Path) Copy() *Path {
 }
 
 // PossibleRoute checks if an edge makes an eligible route to take for the current path.
-func (path *Path) PossibleRoute(edge *Edge) (bool, int) {
-
+func (path *Path) PossibleRoute(edge *Edge) (isPossible bool, index int) {
 	if path.rewardsAreNotNegativeOrUnique(edge.To()) {
 		return false, -1
 	}
@@ -102,7 +101,7 @@ func (path *Path) rewardsChangedSinceLastVisit(edge *Edge) bool {
 	node := edge.To()
 
 	for k, v := range edge.From().Rewards() {
-		rewards[k] = rewards[k] + v
+		rewards[k] += v
 	}
 
 	if edge.From() == edge.To() {
@@ -111,7 +110,7 @@ func (path *Path) rewardsChangedSinceLastVisit(edge *Edge) bool {
 
 	for i := len(path.edges) - 1; i >= 0; i-- {
 		for k, v := range path.edges[i].From().Rewards() {
-			rewards[k] = rewards[k] + v
+			rewards[k] += v
 		}
 		if path.edges[i].From() == node {
 			break
@@ -141,7 +140,7 @@ func (path *Path) rewardsAreNotNegativeOrUnique(node *Node) bool {
 	return false
 }
 
-func (path *Path) requirementsMet(edge *Edge) (bool, int) {
+func (path *Path) requirementsMet(edge *Edge) (result bool, index int) {
 	for i, weight := range edge.Weights() {
 		if path.weightRequirementsMet(weight) {
 			return true, i

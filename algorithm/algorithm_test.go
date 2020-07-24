@@ -3,11 +3,12 @@ package algorithm
 import (
 	"bufio"
 	"fmt"
-	m "github.com/hzck/speedroute/model"
-	"github.com/hzck/speedroute/parser"
 	"math/rand"
 	"os"
 	"testing"
+
+	m "github.com/hzck/speedroute/model"
+	"github.com/hzck/speedroute/parser"
 )
 
 // TestAllFiles goes through tests/ folder and tries to route a path, verifying towards files
@@ -53,9 +54,7 @@ func getDirFileNames(t *testing.T, dirName string) []string {
 	files, _ := dir.Readdir(-1)
 	for _, file := range files {
 		if file.IsDir() {
-			for _, fileName := range getDirFileNames(t, dirName+file.Name()+"/") {
-				fileNames = append(fileNames, fileName)
-			}
+			fileNames = append(fileNames, getDirFileNames(t, dirName+file.Name()+"/")...)
 			continue
 		}
 		fileNames = append(fileNames, dirName+file.Name())
@@ -128,8 +127,7 @@ func createBenchmarkGraph(size int) *m.Graph {
 	return m.CreateGraph(startNode, transitionNode)
 }
 
-func createWeightedEdge(from, to *m.Node, time int) *m.Edge {
+func createWeightedEdge(from, to *m.Node, time int) {
 	edge := m.CreateEdge(from, to)
-	edge.AddWeight(m.CreateWeight(rand.Intn(10000) + 1))
-	return edge
+	edge.AddWeight(m.CreateWeight(time))
 }

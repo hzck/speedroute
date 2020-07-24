@@ -29,7 +29,7 @@ func CreateWeight(time int) *Weight {
 	return weight
 }
 
-//ByTime is a list of Weights which implements the sort interface.
+// ByTime is a list of Weights which implements the sort interface.
 type ByTime []*Weight
 
 // Len returns the ByTime length.
@@ -37,7 +37,7 @@ func (a ByTime) Len() int {
 	return len(a)
 }
 
-//Swap changes position of two weights in the ByTime list.
+// Swap changes position of two weights in the ByTime list.
 func (a ByTime) Swap(i, j int) {
 	a[i], a[j] = a[j], a[i]
 }

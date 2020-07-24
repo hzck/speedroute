@@ -3,9 +3,6 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
-	a "github.com/hzck/speedroute/algorithm"
-	p "github.com/hzck/speedroute/parser"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -13,6 +10,11 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/gorilla/mux"
+
+	a "github.com/hzck/speedroute/algorithm"
+	p "github.com/hzck/speedroute/parser"
 )
 
 var mutex = &sync.Mutex{}
@@ -107,15 +109,15 @@ func main() {
 	log.SetOutput(f)
 	log.Println("### Server started ###")
 	fs := osFS{}
-	ioutil := ioutilFS{}
+	io := ioutilFS{}
 	r := mux.NewRouter()
 	r.HandleFunc("/create/{id:[A-Za-z0-9-_]+}/{pw:.*}", createGraphHandler(fs)).Methods("POST")
-	r.HandleFunc("/graphs", listGraphsHandler(ioutil)).Methods("GET")
+	r.HandleFunc("/graphs", listGraphsHandler(io)).Methods("GET")
 	r.HandleFunc("/graph/{id:[A-Za-z0-9-_]+}", getGraphHandler(fs)).Methods("GET")
 	r.HandleFunc("/graph/{id:[A-Za-z0-9-_]+}/{pw:.*}", saveGraphHandler(fs)).Methods("POST")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("public")))
 
-	log.Fatal(http.ListenAndServe(":8001", r))
+	log.Println(http.ListenAndServe(":8001", r))
 }
 
 func createFile(fs iFileSystem, filename, fileContent string) (httpStatus int, err error) {
@@ -226,7 +228,7 @@ func saveGraphHandler(fs iFileSystem) http.HandlerFunc {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		err = ioutil.WriteFile(filename, newGraph, 0644)
+		err = ioutil.WriteFile(filename, newGraph, 0600)
 		if err != nil {
 			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)

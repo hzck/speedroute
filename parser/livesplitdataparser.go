@@ -25,7 +25,9 @@ func LivesplitXMLtoJSON(data string) (string, error) {
 	g.StartID = currentNode
 	for _, seg := range v.Segments {
 		g.Nodes = append(g.Nodes, node{ID: seg.Name, Rewards: make([]rewardRef, 0)})
-		g.Edges = append(g.Edges, edge{From: currentNode, To: seg.Name, Weights: []weight{weight{Time: seg.BestSegmentTime, Requirements: make([]rewardRef, 0)}}})
+		var reqs = make([]rewardRef, 0)
+		var weights = []weight{{Time: seg.BestSegmentTime, Requirements: reqs}}
+		g.Edges = append(g.Edges, edge{From: currentNode, To: seg.Name, Weights: weights})
 		currentNode = seg.Name
 	}
 	g.EndID = currentNode

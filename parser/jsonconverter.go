@@ -3,8 +3,9 @@ package parser
 
 import (
 	"encoding/json"
-	m "github.com/hzck/speedroute/model"
 	"io/ioutil"
+
+	m "github.com/hzck/speedroute/model"
 )
 
 type rewardRef struct {
@@ -58,7 +59,7 @@ func CreateGraphFromFile(path string) (*m.Graph, error) {
 	}
 
 	rewards := make(map[string]*m.Reward)
-	//ugly loop to make sure to handle different ordered rewards
+	// ugly loop to make sure to handle different ordered rewards
 	for rewardAdded := true; rewardAdded; {
 		rewardAdded = false
 		for _, r := range g.Rewards {
@@ -73,7 +74,8 @@ func CreateGraphFromFile(path string) (*m.Graph, error) {
 	for _, n := range g.Nodes {
 		node := m.CreateNode(n.ID, n.Revisitable)
 		for _, rewardRef := range n.Rewards {
-			node.AddReward(rewards[rewardRef.RewardID], getPointerValueOrOne(rewardRef.Quantity)) //duplicate code
+			// duplicate code
+			node.AddReward(rewards[rewardRef.RewardID], getPointerValueOrOne(rewardRef.Quantity))
 		}
 		nodes[node.ID()] = node
 	}
@@ -87,7 +89,8 @@ func CreateGraphFromFile(path string) (*m.Graph, error) {
 			}
 			weight := m.CreateWeight(time)
 			for _, rewardRef := range w.Requirements {
-				weight.AddRequirement(rewards[rewardRef.RewardID], getPointerValueOrOne(rewardRef.Quantity)) //duplicate code
+				// duplicate code
+				weight.AddRequirement(rewards[rewardRef.RewardID], getPointerValueOrOne(rewardRef.Quantity))
 			}
 			edge.AddWeight(weight)
 		}

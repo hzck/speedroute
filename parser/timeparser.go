@@ -16,16 +16,20 @@ const MtoMS = 60 * StoMS
 // HtoMS is the factor which needs to be multiplies when converting hours to milliseconds (60*60*1000).
 const HtoMS = 60 * MtoMS
 
+const onlySec = 1
+const minSec = 2
+const hourMinSec = 3
+
 func parseTime(time string) (int, error) {
 	times := strings.Split(time, ":")
 	var h, m, s string
 	switch len(times) {
-	case 1:
+	case onlySec:
 		s = times[0]
-	case 2:
+	case minSec:
 		m = times[0]
 		s = times[1]
-	case 3:
+	case hourMinSec:
 		h = times[0]
 		m = times[1]
 		s = times[2]
@@ -82,9 +86,5 @@ func parseSeconds(time string) (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	return int(round(result * StoMS)), nil
-}
-
-func round(f float64) float64 {
-	return math.Floor(f + .5)
+	return int(math.Round(result * StoMS)), nil
 }
