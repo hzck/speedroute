@@ -2,6 +2,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -12,6 +13,8 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/joho/godotenv"
 
 	a "github.com/hzck/speedroute/algorithm"
 	p "github.com/hzck/speedroute/parser"
@@ -97,6 +100,7 @@ func (osFS) Stat(name string) (os.FileInfo, error) {
 }
 
 func main() {
+	// Creating logfile
 	f, err := os.OpenFile("logfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		panic(err)
@@ -107,6 +111,24 @@ func main() {
 		}
 	}()
 	log.SetOutput(f)
+	// Reading environment variables
+	err = godotenv.Load("config.env")
+	if err != nil {
+		log.Println("Error loading config.env file")
+		panic(err)
+	}
+	// Connecting to the DB
+	dbConnString := "postgresql://" +
+		os.Getenv("DB_USER") + ":" +
+		os.Getenv("DB_PASSWORD") + "@" +
+		os.Getenv("DB_URL") + ":" +
+		os.Getenv("DB_PORT") + "/speedroute?pool_max_conns=10"
+	dbpool, err := pgxpool.Connect(context.Background(), dbConnString)
+	if err != nil {
+		log.Println("Unable to connect to database: ", err)
+		panic(err)
+	}
+	defer dbpool.Close()
 	log.Println("### Server started ###")
 	fs := osFS{}
 	io := ioutilFS{}
