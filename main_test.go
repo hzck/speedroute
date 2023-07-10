@@ -26,31 +26,35 @@ func TestMain(m *testing.M) {
 }
 
 func TestCreateAccount(t *testing.T) {
-	username := "valid_username_7"
+	displayname := "Valid_Username_7"
 	password := "val!dP@s5word"
 
-	req := createPostRequestForCreateAccount(username, password)
+	req := createPostRequestForCreateAccount(displayname, password)
 
 	response := executeRequest(req)
-	defer clearAccountInDB(username)
+	defer clearAccountInDB(displayname)
 
 	checkResponseCode(t, http.StatusCreated, response.Code)
 
 	var a model.Account
-	query := "SELECT * FROM account WHERE username=$1"
-	err := app.Dbpool.QueryRow(context.Background(), query, username).Scan(&a.ID, &a.Username, &a.Password, &a.Created, &a.LastUpdated)
+	query := "SELECT * FROM account WHERE displayname=$1"
+	err := app.Dbpool.QueryRow(context.Background(), query, displayname).Scan(&a.ID, &a.Username, &a.DisplayName, &a.Password, &a.Created, &a.LastUpdated)
 	if err != nil {
 		panic(err)
 	}
 	if a.ID <= 0 {
 		t.Errorf("ID field is not valid")
 	}
+	username := strings.ToLower(displayname)
 	if a.Username != username {
 		t.Errorf("Username '%s' is not the expected '%s'", a.Username, username)
 	}
+	if a.DisplayName != displayname {
+		t.Errorf("DisplayName '%s' is not the expected '%s'", a.DisplayName, displayname)
+	}
 	match, _ := regexp.MatchString("^\\$argon2id\\$v=19\\$m=65536,t=8,p=1\\$.{22}\\$.{43}$", a.Password)
 	if !match {
-		t.Errorf("Password field is not set")
+		t.Errorf("Password field is not set correctly")
 	}
 	if a.Created.IsZero() {
 		t.Errorf("Created field is not set")
@@ -82,15 +86,6 @@ func TestCreateAccountDuplicateUsername(t *testing.T) {
 	username := "duplicate"
 	createAccountInDB(username)
 	defer clearAccountInDB(username)
-	req := createPostRequestForCreateAccount(username, "val!dP@s5word")
-	response := executeRequest(req)
-	checkResponseCode(t, http.StatusConflict, response.Code)
-}
-
-func TestCreateAccountLowerCaseUsername(t *testing.T) {
-	username := "CaMeLcAsE_8"
-	createAccountInDB(strings.ToLower(username))
-	defer clearAccountInDB(strings.ToLower(username))
 	req := createPostRequestForCreateAccount(username, "val!dP@s5word")
 	response := executeRequest(req)
 	checkResponseCode(t, http.StatusConflict, response.Code)
@@ -158,17 +153,17 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
-func createAccountInDB(username string) {
-	query := "INSERT INTO account (username, password, created, last_updated) VALUES ($1, $2, $3, $3)"
-	_, err := app.Dbpool.Exec(context.Background(), query, username, "password", time.Now())
+func createAccountInDB(displayname string) {
+	query := "INSERT INTO account (username, displayname, password, created, last_updated) VALUES ($1, $2, $3, $4, $4)"
+	_, err := app.Dbpool.Exec(context.Background(), query, strings.ToLower(displayname), displayname, "password", time.Now())
 	if err != nil {
 		panic(err)
 	}
 }
 
-func clearAccountInDB(username string) {
-	query := "DELETE FROM account WHERE username=$1"
-	_, err := app.Dbpool.Exec(context.Background(), query, username)
+func clearAccountInDB(displayname string) {
+	query := "DELETE FROM account WHERE displayname=$1"
+	_, err := app.Dbpool.Exec(context.Background(), query, displayname)
 	if err != nil {
 		panic(err)
 	}

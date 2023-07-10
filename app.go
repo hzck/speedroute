@@ -98,6 +98,8 @@ func (a *App) InitDB() func() {
 func (a *App) InitRoutes() {
 	a.Router = mux.NewRouter()
 	a.Router.HandleFunc("/account", a.createAccount(a.Dbpool)).Methods("POST")
+	fs := http.FileServer(http.Dir("frontend/build"))
+	a.Router.PathPrefix("/").Handler(http.StripPrefix("/", fs))
 }
 
 // Run starts the application.
@@ -122,6 +124,7 @@ func (a *App) createAccount(dbpool *pgxpool.Pool) http.HandlerFunc {
 		}
 		var account model.Account
 		account.Username = strings.ToLower(newAccount.Username)
+		account.DisplayName = newAccount.Username
 
 		//TODO: If username already taken, no need to create hash
 		hash, err := argon2id.CreateHash(newAccount.Password, a.HashParams)
