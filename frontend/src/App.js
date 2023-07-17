@@ -4,14 +4,15 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Login from "./Login";
-import ProTip from "./ProTip";
+import { ThemeProvider } from "@mui/material";
+import theme from "./theme";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="/">
+        speedroute.org
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -21,15 +22,16 @@ function Copyright() {
 
 export default function App() {
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Material UI Create React App example
-        </Typography>
-        <Login />
-        <ProTip />
-        <Copyright />
-      </Box>
-    </Container>
+    <ThemeProvider theme={theme}>
+      <Container maxWidth="sm">
+        <Box sx={{ my: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Speedroute
+          </Typography>
+          <Login />
+          <Copyright />
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 }

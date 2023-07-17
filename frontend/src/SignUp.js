@@ -4,19 +4,13 @@ import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { Divider } from "@mui/material";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import SignUp from "./SignUp";
 
-export default function Login() {
+export default function SignUp() {
   const [usernameError, setUsernameError] = React.useState(false);
   const [passwordError, setPasswordError] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -40,30 +34,21 @@ export default function Login() {
     console.log(formObj);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Box
         sx={{
-          marginBottom: 8,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
+          <PersonAddAltIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Login
+          Sign up
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
@@ -91,37 +76,16 @@ export default function Login() {
             autoComplete="current-password"
             error={passwordError}
             helperText={
-              passwordError ? "The password must be at least 8 characters" : ""
+              passwordError
+                ? "The password need to have at least 8 characters"
+                : ""
             }
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 3 }}
-          >
-            Login
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
+            Sign up
           </Button>
         </Box>
-        <Divider role="presentation" flexItem>
-          OR
-        </Divider>
-        <Button variant="outlined" onClick={handleClickOpen} sx={{ mt: 3 }}>
-          Sign up
-        </Button>
       </Box>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogContent>
-          <SignUp />
-        </DialogContent>
-        <DialogActions>
-          <Box m="auto">
-            <Button onClick={handleClose} sx={{ mt: -4 }}>
-              Cancel
-            </Button>
-          </Box>
-        </DialogActions>
-      </Dialog>
     </Container>
   );
 }
