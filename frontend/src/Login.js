@@ -12,6 +12,8 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import SignUp from "./SignUp";
+import UsernameHelperText from "./texts/UsernameHelperText";
+import PasswordHelperText from "./texts/PasswordHelperText";
 
 export default function Login() {
   const [usernameError, setUsernameError] = React.useState(false);
@@ -75,9 +77,7 @@ export default function Login() {
             name="username"
             autoComplete="username"
             error={usernameError}
-            helperText={
-              usernameError ? "Valid characters are A-Z a-z 0-9 _" : ""
-            }
+            helperText={usernameError ? <UsernameHelperText /> : ""}
             autoFocus
           />
           <TextField
@@ -90,9 +90,7 @@ export default function Login() {
             id="password"
             autoComplete="current-password"
             error={passwordError}
-            helperText={
-              passwordError ? "The password must be at least 8 characters" : ""
-            }
+            helperText={passwordError ? <PasswordHelperText /> : ""}
           />
           <Button
             type="submit"

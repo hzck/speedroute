@@ -7,6 +7,8 @@ import Box from "@mui/material/Box";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import UsernameHelperText from "./texts/UsernameHelperText";
+import PasswordHelperText from "./texts/PasswordHelperText";
 
 export default function SignUp() {
   const [usernameError, setUsernameError] = React.useState(false);
@@ -60,9 +62,7 @@ export default function SignUp() {
             name="username"
             autoComplete="username"
             error={usernameError}
-            helperText={
-              usernameError ? "Valid characters are A-Z a-z 0-9 _" : ""
-            }
+            helperText={usernameError ? <UsernameHelperText /> : ""}
             autoFocus
           />
           <TextField
@@ -75,11 +75,7 @@ export default function SignUp() {
             id="password"
             autoComplete="current-password"
             error={passwordError}
-            helperText={
-              passwordError
-                ? "The password need to have at least 8 characters"
-                : ""
-            }
+            helperText={passwordError ? <PasswordHelperText /> : ""}
           />
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
             Sign up
