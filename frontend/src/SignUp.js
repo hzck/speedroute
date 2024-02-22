@@ -8,10 +8,12 @@ import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import UsernameHelperText from "./texts/UsernameHelperText";
+import UsernameTakenText from "./texts/UsernameTakenText";
 import PasswordHelperText from "./texts/PasswordHelperText";
 
 export default function SignUp() {
   const [usernameError, setUsernameError] = React.useState(false);
+  const [usernameTakenError, setUsernameTakenError] = React.useState(false);
   const [passwordError, setPasswordError] = React.useState(false);
 
   const handleSubmit = (event) => {
@@ -24,16 +26,40 @@ export default function SignUp() {
     };
 
     setUsernameError(false);
+    setUsernameTakenError(false);
     setPasswordError(false);
 
+    var error = false;
     if (!/^[\w]{2,30}$/.test(formObj.username)) {
       setUsernameError(true);
+      error = true;
     }
     if (formObj.password.length < 8) {
       setPasswordError(true);
+      error = true;
     }
 
-    console.log(formObj);
+    if (error) {
+      return;
+    }
+
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formObj),
+    };
+
+    fetch("/signup", options).then((response) => {
+      if (response.status == 201) {
+        // route to start page
+      } else if (response.status == 409) {
+        setUsernameTakenError(true);
+      } else {
+        console.log("Respone status " + response.status + " not supported.");
+      }
+    });
   };
 
   return (
@@ -61,8 +87,16 @@ export default function SignUp() {
             label="Username"
             name="username"
             autoComplete="username"
-            error={usernameError}
-            helperText={usernameError ? <UsernameHelperText /> : ""}
+            error={usernameError || usernameTakenError}
+            helperText={
+              usernameError ? (
+                <UsernameHelperText />
+              ) : usernameTakenError ? (
+                <UsernameTakenText />
+              ) : (
+                ""
+              )
+            }
             autoFocus
           />
           <TextField

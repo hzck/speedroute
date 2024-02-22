@@ -97,7 +97,7 @@ func (a *App) InitDB() func() {
 // InitRoutes initializes the routes used by the application
 func (a *App) InitRoutes() {
 	a.Router = mux.NewRouter()
-	a.Router.HandleFunc("/account", a.createAccount(a.Dbpool)).Methods("POST")
+	a.Router.HandleFunc("/signup", a.createAccount(a.Dbpool)).Methods("POST")
 	fs := http.FileServer(http.Dir("frontend/build"))
 	a.Router.PathPrefix("/").Handler(http.StripPrefix("/", fs))
 }

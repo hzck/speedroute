@@ -133,7 +133,7 @@ func createPostRequestForCreateAccount(username, password string) *http.Request 
 		commaJSON = ","
 	}
 	var jsonStr = []byte("{" + usernameJSON + commaJSON + passwordJSON + "}")
-	req, err := http.NewRequest("POST", "/account", bytes.NewBuffer(jsonStr))
+	req, err := http.NewRequest("POST", "/signup", bytes.NewBuffer(jsonStr))
 	if err != nil {
 		panic(err)
 	}
