@@ -12,7 +12,7 @@ import (
 
 	"github.com/alexedwards/argon2id"
 	"github.com/gorilla/mux"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 
 	model "github.com/hzck/speedroute/model"
@@ -83,7 +83,7 @@ func (a *App) InitDB() func() {
 		os.Getenv("DB_URL") + ":" +
 		os.Getenv("DB_PORT") + "/speedroute?pool_max_conns=10"
 	var err error
-	a.Dbpool, err = pgxpool.Connect(context.Background(), dbConnString)
+	a.Dbpool, err = pgxpool.New(context.Background(), dbConnString)
 	if err != nil {
 		log.Println("Unable to connect to database: ", err)
 		panic(err)
