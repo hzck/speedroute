@@ -4,7 +4,7 @@ Speedrun route planning algorithm, finding the shortest possible path in a direc
 Project is "soon" hosted on [https://speedroute.org](https://speedroute.org).
 
 ## Getting started
-1. Install go
+1. Install go (v1.20 or higher)
 2. Install & setup postgresql
 3. Install flyway CLI
 4. Run `./flyway-migrate.sh`
