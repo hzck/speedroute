@@ -140,6 +140,13 @@ func (a *App) createAccount(dbpool *pgxpool.Pool) http.HandlerFunc {
 			return
 		}
 
+		ws, err := model.CreateWebsession(dbpool, account.ID, parseUInt32FromOsEnv("WEBSESSION_HOURS_LOGGED_IN"))
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		http.SetCookie(w, &http.Cookie{Name: "speedroute_websession", Expires: ws.ExpireAt, Value: ws.Token.String()})
 		w.WriteHeader(http.StatusCreated)
 	}
 }

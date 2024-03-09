@@ -26,8 +26,11 @@ func (a *Account) String() string {
 
 // CreateAccount creates and stores a new account to the database.
 func (a *Account) CreateAccount(dbpool *pgxpool.Pool) error {
-	query := "INSERT INTO account (username, displayname, password, created, last_updated) VALUES ($1, $2, $3, $4, $4)"
-	_, err := dbpool.Exec(context.Background(), query, a.Username, a.DisplayName, a.Password, time.Now())
+	now := time.Now()
+	a.Created = now
+	a.LastUpdated = now
+	query := "INSERT INTO account (username, displayname, password, created, last_updated) VALUES ($1, $2, $3, $4, $4) RETURNING id"
+	err := dbpool.QueryRow(context.Background(), query, a.Username, a.DisplayName, a.Password, now).Scan(&a.ID)
 	if err != nil {
 		// Assume username already taken
 		log.Println(err)

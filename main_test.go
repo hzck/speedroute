@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	model "github.com/hzck/speedroute/model"
 )
 
@@ -61,6 +62,24 @@ func TestCreateAccount(t *testing.T) {
 	}
 	if a.LastUpdated.IsZero() {
 		t.Errorf("LastUpdated field is not set")
+	}
+
+	cookie := response.Result().Cookies()[0]
+	var ws model.Websession
+	query = "SELECT * FROM websession WHERE account_id=$1"
+	err = app.Dbpool.QueryRow(context.Background(), query, a.ID).Scan(&ws.Token, &ws.AccountId, &ws.ExpireAt)
+	if err != nil {
+		panic(err)
+	}
+	if cookie.Name != "speedroute_websession" {
+		t.Errorf(("Cookie name is not speedroute_websession"))
+	}
+	if ws.Token != uuid.MustParse(cookie.Value) {
+		t.Errorf("Cookie doesn't contain the correct UUID in value field")
+	}
+	// Cookie value omits millisecond, duration needs to be less than 1 sec in nanosecondss
+	if ws.ExpireAt.Sub(cookie.Expires) >= 1_000_000_000 {
+		t.Errorf("ExpireAt in DB (%s) != cookie Expires (%s)", ws.ExpireAt, cookie.Expires)
 	}
 }
 
