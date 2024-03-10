@@ -1,0 +1,25 @@
+ROUTES suggestion
+
+if websession cookie not set
+    all routes show login screen
+if websession cookie is set
+    /           start page, listing graphs
+    /settings   account settings page
+    /<id>       graph with id <id> (if user has access)
+    /<id>       404 page "wrong id or user doesn't have permission"
+
+
+TODO: 
+set up text document
+
+jsconfig.json
+
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "jsx": "preserve",
+    "checkJs": true,
+    "esModuleInterop": true
+  },
+  "exclude": ["node_modules", "**/node_modules/*"]
+}

@@ -8,12 +8,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Divider } from "@mui/material";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import SignUp from "./SignUp";
-import UsernameHelperText from "./texts/UsernameHelperText";
-import PasswordHelperText from "./texts/PasswordHelperText";
+import SignUpDialog from "./SignUpDialog";
+import { texts } from "./texts/texts";
 
 export default function Login() {
   const [usernameError, setUsernameError] = React.useState(false);
@@ -32,10 +28,10 @@ export default function Login() {
     setUsernameError(false);
     setPasswordError(false);
 
-    if (!/^[\w]{2,30}$/.test(formObj.username)) {
+    if (!/^[\w]{2,30}$/.test(formObj.username as string)) {
       setUsernameError(true);
     }
-    if (formObj.password.length < 8) {
+    if ((formObj.password as string).length < 8) {
       setPasswordError(true);
     }
 
@@ -77,7 +73,7 @@ export default function Login() {
             name="username"
             autoComplete="username"
             error={usernameError}
-            helperText={usernameError ? <UsernameHelperText /> : ""}
+            helperText={usernameError ? texts.login.userNameTaken : ""}
             autoFocus
           />
           <TextField
@@ -90,7 +86,7 @@ export default function Login() {
             id="password"
             autoComplete="current-password"
             error={passwordError}
-            helperText={passwordError ? <PasswordHelperText /> : ""}
+            helperText={passwordError ? texts.login.passwordHelper : ""}
           />
           <Button
             type="submit"
@@ -108,18 +104,7 @@ export default function Login() {
           Sign up
         </Button>
       </Box>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogContent>
-          <SignUp />
-        </DialogContent>
-        <DialogActions>
-          <Box m="auto">
-            <Button onClick={handleClose} sx={{ mt: -4 }}>
-              Cancel
-            </Button>
-          </Box>
-        </DialogActions>
-      </Dialog>
+      <SignUpDialog open={open} onClose={handleClose} />
     </Container>
   );
 }

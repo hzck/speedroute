@@ -13,8 +13,11 @@
     "@emotion/styled": "11.11.0",
     "@mui/icons-material": "5.14.19",
     "@mui/material": "5.14.19",
+    "@types/react": "^18.2.65",
+    "@types/react-dom": "^18.2.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-router-dom": "^6.22.3",
     "react-scripts": "5.0.1"
   },
   "proxy": "http://localhost:8001",
@@ -29,5 +32,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.0"
   }
 }

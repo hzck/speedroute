@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import UsernameHelperText from "./texts/UsernameHelperText";
 import UsernameTakenText from "./texts/UsernameTakenText";
-import PasswordHelperText from "./texts/PasswordHelperText";
+import PasswordHelperText from "./texts/texts";
 
 export default function SignUp() {
   const [usernameError, setUsernameError] = React.useState(false);
